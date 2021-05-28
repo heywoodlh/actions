@@ -38,4 +38,4 @@ jobs:
           context: /home/runner/work/actions/actions/pwncheck
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/PwnCheck:latest,heywoodlh/PwnCheck:${{ steps.date.outputs.date }}
+          tags: heywoodlh/pwncheck:latest,heywoodlh/pwncheck:${{ steps.date.outputs.date }}
