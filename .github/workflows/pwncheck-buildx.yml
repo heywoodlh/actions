@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: clone https://github.com/selftaught/PwnCheck
+        name: clone https://github.com/heywoodlh/PwnCheck
         uses: actions/checkout@main
         with:
-          name: selftaught/PwnCheck
-          repository: selftaught/PwnCheck
+          name: heywoodlh/PwnCheck
+          repository: heywoodlh/PwnCheck
           path: ./pwncheck
       -
         name: Set up QEMU
