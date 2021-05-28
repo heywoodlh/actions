@@ -14,6 +14,7 @@ jobs:
         uses: actions/checkout@main
         with:
           name: selftaught/PwnCheck
+          repository: selftaught/PwnCheck
           path: ./pwncheck
       -
         name: Set up QEMU
