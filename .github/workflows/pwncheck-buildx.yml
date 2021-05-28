@@ -31,6 +31,9 @@ jobs:
         name: Get current month
         id: date
         run: echo "::set-output name=date::$(date +%Y_%m_snapshot)"
+      - 
+        name: ls pwncheck
+        run: ls 
       -
         name: Build and push heywoodlh/pwncheck
         uses: docker/build-push-action@v2
