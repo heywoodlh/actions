@@ -11,7 +11,7 @@ jobs:
     steps:
       -
         name: clone https://github.com/selftaught/PwnCheck
-        uses: actions/checkout@master
+        uses: actions/checkout@main
         with:
           name: selftaught/PwnCheck
           ref: refs/heads/release
