@@ -32,10 +32,11 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(date +%Y_%m_snapshot)"
       -
-        name: Build and push PwnCheck
+        name: Build and push heywoodlh/pwncheck
         uses: docker/build-push-action@v2
         with:
           context: /home/runner/work/actions/actions/pwncheck
+          context: /home/runner/work/actions/actions/pwncheck/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
           tags: heywoodlh/pwncheck:latest,heywoodlh/pwncheck:${{ steps.date.outputs.date }}
