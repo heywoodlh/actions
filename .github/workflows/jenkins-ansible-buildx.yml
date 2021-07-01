@@ -1,8 +1,8 @@
-name: jenkins-buildx
+name: jenkins-ansible-buildx
 
 on:
   schedule:
-    - cron: "30 0 * * Sun"
+    - cron: "0 3 * * Sun"
   workflow_dispatch:
   
 jobs:
@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: clone https://github.com/jenkinsci/docker
+        name: clone https://github.com/heywoodlh/dockerfiles
         uses: actions/checkout@master
         with:
-          name: jenkinsci/docker
-          repository: jenkinsci/docker
-          path: ./jenkins-docker
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -33,11 +33,11 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(date +%Y_%m_snapshot)"
       -
-        name: Build and push heywoodlh/jenkins
+        name: Build and push heywoodlh/jenkins-ansible
         uses: docker/build-push-action@v2
         with:
-          context: ./jenkins-docker
-          file: ./jenkins-docker/11/debian/buster/hotspot/Dockerfile
+          context: ./dockerfiles
+          file: ./dockerfiles/jenkins-ansible/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/jenkins:latest,heywoodlh/jenkins:${{ steps.date.outputs.date }}
+          tags: heywoodlh/jenkins-ansible:latest,heywoodlh/jenkins-ansible:${{ steps.date.outputs.date }}
