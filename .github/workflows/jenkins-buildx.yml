@@ -1,4 +1,4 @@
-name: pwncheck-buildx
+name: jenkins-buildx
 
 on:
   schedule:
@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: clone https://github.com/selftaught/PwnCheck
-        uses: actions/checkout@main
+        name: clone https://github.com/jenkinsci/docker
+        uses: actions/checkout@master
         with:
-          name: heywoodlh/PwnCheck
-          repository: heywoodlh/PwnCheck
-          path: ./pwncheck
+          name: jenkinsci/docker
+          repository: jenkinsci/docker
+          path: ./jenkins-docker
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -33,11 +33,11 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(date +%Y_%m_snapshot)"
       -
-        name: Build and push heywoodlh/pwncheck
+        name: Build and push heywoodlh/jenkins
         uses: docker/build-push-action@v2
         with:
-          context: ./pwncheck
-          file: ./pwncheck/Dockerfile
+          context: ./jenkins-docker
+          file: ./jenkins-docker/11/debian/buster/hotspot/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/pwncheck:latest,heywoodlh/pwncheck:${{ steps.date.outputs.date }}
+          tags: heywoodlh/jenkins:latest,heywoodlh/jenkins:${{ steps.date.outputs.date }}
