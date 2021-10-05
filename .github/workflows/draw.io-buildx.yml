@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: clone https://github.com/fjudith/docker-draw.io
+        name: clone https://github.com/jgraph/docker-drawio
         uses: actions/checkout@master
         with:
-          name: fjudith/docker-draw.io
-          repository: fjudith/docker-draw.io
+          name: jgraph/docker-drawio
+          repository: jgraph/docker-drawio
           path: ./docker-drawio
       -
         name: Set up QEMU
