@@ -15,4 +15,4 @@ jobs:
           destination_repo: "heywoodlh/conf"
           destination_branch: "master"
           source_ssh_private_key: ${{ secrets.SOURCEHUT_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
-          destination_ssh_private_key: ${{ secrets.ACTIONS_REPO_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
+          destination_ssh_private_key: ${{ secrets.CONF_REPO_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
