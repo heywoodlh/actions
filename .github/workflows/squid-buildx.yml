@@ -40,15 +40,13 @@ jobs:
       - 
         name: Get squid version
         id: version
-        run: echo "squid_version=$(docker run -it --rm heywoodlh/squid:latest squid --version | grep 'Squid Cache' | awk '{print $4}')" >> $GITHUB_ENV
-      - name: Print squid version
-        run: echo squid_version ${{ env.squid_version }}
+        run: echo "::set-output name=version::$(docker run -it --rm heywoodlh/squid:latest squid --version | grep 'Squid Cache' | awk '{print $4}')"
       -
-        name: Build and push heywoodlh/squid:${{ env.squid_version }}
+        name: Build and push heywoodlh/squid:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
         with:
           context: ./dockerfiles/squid
           file: ./dockerfiles/squid/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/squid:${{ env.squid_version }}
+          tags: heywoodlh/squid:${{ steps.version.outputs.version }}
