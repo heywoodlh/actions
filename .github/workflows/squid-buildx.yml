@@ -40,7 +40,9 @@ jobs:
       - 
         name: Get squid version
         id: version
-        run: echo "::set-output name=version::$(docker run -it --rm heywoodlh/squid:latest squid --version | grep 'Squid Cache' | awk '{print $4}')"
+        uses: addnab/docker-run-action@v3
+        with:
+          run: echo "::set-output name=version::$(squid --version | grep 'Squid Cache' | awk '{print $4}')"
       -
         name: Build and push heywoodlh/squid:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
