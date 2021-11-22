@@ -28,10 +28,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      - 
-        name: Get current month
-        id: date
-        run: echo "::set-output name=date::$(date +%Y_%m_snapshot)"
       -
         name: Build and push heywoodlh/squid
         uses: docker/build-push-action@v2
@@ -44,13 +40,14 @@ jobs:
       - 
         name: Get squid version
         id: version
-        run: echo "::set-output name=version::$(docker run -it --rm heywoodlh/squid:latest squid --version | grep 'Squid Cache' | awk '{print $4}')"
+        run: echo "squid_version=$(docker run -it --rm heywoodlh/squid:latest squid --version | grep 'Squid Cache' | awk '{print $4}')" >> $GITHUB_ENV
+        run: echo "::set-output name=version::$()"
       -
-        name: Build and push heywoodlh/squid:${{ steps.version.outputs.version }}
+        name: Build and push heywoodlh/squid:${{ env.squid_version }}
         uses: docker/build-push-action@v2
         with:
           context: ./dockerfiles/squid
           file: ./dockerfiles/squid/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/squid:${{ steps.version.outputs.version }}
+          tags: heywoodlh/squid:${{ env.squid_version }}
