@@ -15,6 +15,7 @@ jobs:
         with:
           name: Eugeny/tabby-web
           repository: Eugeny/tabby-web
+          path: ./tabby-web
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
