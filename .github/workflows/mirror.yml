@@ -16,6 +16,7 @@ jobs:
           destination_branch: "master"
           source_ssh_private_key: ${{ secrets.SOURCEHUT_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
           destination_ssh_private_key: ${{ secrets.CONF_REPO_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
+        if: always()
       - name: ansible-sync
         uses: wei/git-sync@v3
         with:
@@ -25,3 +26,14 @@ jobs:
           destination_branch: "master"
           source_ssh_private_key: ${{ secrets.SOURCEHUT_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
           destination_ssh_private_key: ${{ secrets.ANSIBLE_REPO_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
+        if: always()
+      - name: the-empire.systems-sync
+        uses: wei/git-sync@v3
+        with:
+          source_repo: "git@git.sr.ht:~heywoodlh/the-empire.systems"
+          source_branch: "master"
+          destination_repo: "heywoodlh/the-empire.systems"
+          destination_branch: "master"
+          source_ssh_private_key: ${{ secrets.SOURCEHUT_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
+          destination_ssh_private_key: ${{ secrets.EMPIRE_REPO_SSH_PRIVATE_KEY }} # optional, will override `SSH_PRIVATE_KEY`
+        if: always()
