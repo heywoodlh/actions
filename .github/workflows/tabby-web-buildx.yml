@@ -34,6 +34,6 @@ jobs:
         with:
           context: ./tabby-web
           file: ./tabby-web/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/armhf
+          platforms: linux/amd64
           push: true
           tags: heywoodlh/tabby-web:latest
