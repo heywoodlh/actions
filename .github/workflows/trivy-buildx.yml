@@ -1,0 +1,55 @@
+name: trivy-buildx
+
+on:
+  schedule:
+    - cron: "45 0 * * Sun"
+  workflow_dispatch:
+  
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/bitnami/bitnami-docker-trivy 
+        uses: actions/checkout@master
+        with:
+          name: bitnami/bitnami-docker-trivy 
+          repository: bitnami/bitnami-docker-trivy 
+          path: ./docker-trivy
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push heywoodlh/trivy
+        uses: docker/build-push-action@v2
+        with:
+          context: ./docker-trivy/0/debian-10/
+          file: ./docker-trivy/0/debian-10/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/trivy:latest
+      - 
+        name: Get trivy version
+        id: version
+        uses: addnab/docker-run-action@v3
+        with:
+          image: heywoodlh/trivy:latest
+          run: echo "::set-output name=version::$(trivy --version | awk '{print $2}')"
+      -
+        name: Build and push heywoodlh/trivy:${{ steps.version.outputs.version }}
+        uses: docker/build-push-action@v2
+        with:
+          context: ./docker-trivy/0/debian-10/
+          file: ./docker-trivy/0/debian-10/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/trivy:${{ steps.version.outputs.version }}
