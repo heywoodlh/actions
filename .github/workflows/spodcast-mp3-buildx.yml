@@ -42,12 +42,12 @@ jobs:
         id: date
         run: echo "::set-output name=date::$(date +%Y_%m_snapshot)"
       -
-        name: Build and push heywoodlh/spodcast-web
+        name: Build and push heywoodlh/spodcast-mp3
         uses: docker/build-push-action@v2
         with:
-          context: ./dockerfiles/spodcast-web
-          file: ./dockerfiles/spodcast-web/Dockerfile
+          context: ./dockerfiles/spodcast-mp3
+          file: ./dockerfiles/spodcast-mp3/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/spodcast-web:latest,heywoodlh/spodcast-web:${{ steps.date.outputs.date }}
+          tags: heywoodlh/spodcast-mp3:latest,heywoodlh/spodcast-web:${{ steps.date.outputs.date }}
 
