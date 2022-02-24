@@ -49,5 +49,5 @@ jobs:
           file: ./dockerfiles/spodcast-mp3/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/spodcast-mp3:latest,heywoodlh/spodcast-web:${{ steps.date.outputs.date }}
+          tags: heywoodlh/spodcast-mp3:latest,heywoodlh/spodcast-mp3:${{ steps.date.outputs.date }}
 
