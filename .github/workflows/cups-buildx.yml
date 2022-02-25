@@ -51,7 +51,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/cups:latest
-          run: echo "::set-output name=version::$(dpkg -l | grep 'cups-daemon' | awk '{print $3}' | cut -d'-' -f1')"
+          run: echo "::set-output name=version::$(dpkg -l | grep 'cups-daemon' | awk '{print $3}' | cut -d'-' -f1)"
       -
         name: Build and push heywoodlh/cups
         uses: docker/build-push-action@v2
