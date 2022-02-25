@@ -60,5 +60,5 @@ jobs:
           file: ./wifi-cups-server/cup-docker/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/cups:latest,heywoodlh/cups:${{ steps.date.outputs.version }}
+          tags: heywoodlh/cups:latest,heywoodlh/cups:${{ steps.version.outputs.version }}
 
