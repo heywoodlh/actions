@@ -2,7 +2,7 @@ name: cups-buildx
 
 on:
   schedule:
-    - cron: "0 30 * * Sun"
+    - cron: "30 0 * * Sun"
   workflow_dispatch:
   
 jobs:
