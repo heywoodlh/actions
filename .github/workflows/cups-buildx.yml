@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: clone https://github.com/heywoodlh/dockerfiles
+        name: clone https://github.com/lemariva/wifi-cups-server
         uses: actions/checkout@master
         with:
           name: lemariva/wifi-cups-server
@@ -21,6 +21,7 @@ jobs:
           sed -i 's/FROM balenalib\/raspberry-pi-debian:buster/FROM debian:buster/' wifi-cups-server/cup-docker/Dockerfile
           sed -i '/^RUN \[ "cross-build-start" \]/,/.*description="Raspbian.*/d' wifi-cups-server/cup-docker/Dockerfile
           sed -i '/RUN \[ "cross-build-end/d' wifi-cups-server/cup-docker/Dockerfile
+          sed -i '/FROM debian:buster/a RUN apt-get update && apt-get install -y sudo' wifi-cups-server/cup-docker/Dockerfile
           echo 'LABEL maintainer=heywoodlh' >> wifi-cups-server/cup-docker/Dockerfile
           echo '#Original Dockerfile at https://github.com/lemariva/wifi-cups-server -- thank you lemariva!' >> wifi-cups-server/cup-docker/Dockerfile
       -
