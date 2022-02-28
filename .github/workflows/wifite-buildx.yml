@@ -1,8 +1,8 @@
-name: spodcast-web-buildx
+name: wifite-buildx
 
 on:
   schedule:
-  - cron: "7 20 * * Sun"
+        - cron: "7 0 * * Sun"
   workflow_dispatch:
   
 jobs:
@@ -32,12 +32,19 @@ jobs:
         name: Get current month
         id: date
         run: echo "::set-output name=date::$(date +%Y_%m_snapshot)"
+      - 
+        name: Get wifite version
+        id: version
+        uses: addnab/docker-run-action@v3
+        with:
+          image: heywoodlh/wifite:latest
+          run: echo "::set-output name=version::$(dpkg -l | grep wifite | awk '{print $3}' | cut -d+ -f 1)"
       -
-        name: Build and push heywoodlh/spodcast-web
+        name: Build and push heywoodlh/wifite
         uses: docker/build-push-action@v2
         with:
-          context: ./dockerfiles/spodcast-web
-          file: ./dockerfiles/spodcast-web/Dockerfile
+          context: ./dockerfiles/wifite
+          file: ./dockerfiles/wifite/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/spodcast-web:latest,heywoodlh/spodcast-web:${{ steps.date.outputs.date }}
+          tags: heywoodlh/wifite:latest,heywoodlh/wifite:${{ steps.version.outputs.version }}
