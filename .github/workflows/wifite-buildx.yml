@@ -32,8 +32,8 @@ jobs:
         name: Build and push heywoodlh/wifite
         uses: docker/build-push-action@v2
         with:
-          context: ./wifite
-          file: ./wifite/Dockerfile
+          context: ./dockerfiles/wifite
+          file: ./dockerfiles/wifite/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
           tags: heywoodlh/wifite:latest

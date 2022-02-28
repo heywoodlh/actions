@@ -32,8 +32,8 @@ jobs:
         name: Build and push heywoodlh/kali-minimal
         uses: docker/build-push-action@v2
         with:
-          context: ./kali-minimal
-          file: ./kali-minimal/Dockerfile
+          context: ./dockerfiles/kali-minimal
+          file: ./dockerfiles/kali-minimal/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
           tags: heywoodlh/kali-minimal:latest
