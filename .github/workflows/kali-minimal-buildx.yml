@@ -28,17 +28,26 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push heywoodlh/kali-minimal
+        uses: docker/build-push-action@v2
+        with:
+          context: ./kali-minimal
+          file: ./kali-minimal/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/kali-minimal:latest
       - 
         name: Get current month
         id: date
         run: echo "::set-output name=date::$(date +%Y_%m_snapshot)"
       -
-        name: Build and push heywoodlh/spodcast-web
+        name: Build and push heywoodlh/kali-minimal
         uses: docker/build-push-action@v2
         with:
-          context: ./dockerfiles/spodcast-web
-          file: ./dockerfiles/spodcast-web/Dockerfile
+          context: ./dockerfiles/kali-minimal
+          file: ./dockerfiles/kali-minimal/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/spodcast-web:latest,heywoodlh/spodcast-web:${{ steps.date.outputs.date }}
+          tags: heywoodlh/kali-minimal:latest,heywoodlh/kali-minimal:${{ steps.date.outputs.date }}
 
