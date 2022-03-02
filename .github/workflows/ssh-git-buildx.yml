@@ -1,8 +1,8 @@
-name: openssh-buildx
+name: ssh-git-buildx
 
 on:
   schedule:
-    - cron: "20 2 * * Sun"
+    - cron: "10 2 * * Sun"
   workflow_dispatch:
   
 jobs:
@@ -29,27 +29,27 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push heywoodlh/openssh
+        name: Build and push heywoodlh/ssh-git
         uses: docker/build-push-action@v2
         with:
-          context: ./dockerfiles/openssh
-          file: ./dockerfiles/openssh/Dockerfile
+          context: ./dockerfiles/ssh-git
+          file: ./dockerfiles/ssh-git/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/openssh:latest
+          tags: heywoodlh/ssh-git:latest
       - 
-        name: Get openssh version
+        name: Get ssh-git version
         id: version
         uses: addnab/docker-run-action@v3
         with:
-          image: heywoodlh/openssh:latest
-          run: echo "::set-output name=version::$(dpkg -l | grep openssh-server | awk '{print $3}' | cut -d':' -f2 | cut -d'p' -f1)"
+          image: heywoodlh/ssh-git:latest
+          run: echo "::set-output name=version::$(dpkg -l | grep ssh-git-server | awk '{print $3}' | cut -d':' -f2 | cut -d'p' -f1)"
       -
-        name: Build and push heywoodlh/openssh:${{ steps.version.outputs.version }}
+        name: Build and push heywoodlh/ssh-git:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
         with:
-          context: ./dockerfiles/openssh
-          file: ./dockerfiles/openssh/Dockerfile
+          context: ./dockerfiles/ssh-git
+          file: ./dockerfiles/ssh-git/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/openssh:${{ steps.version.outputs.version }}
+          tags: heywoodlh/ssh-git:${{ steps.version.outputs.version }}
