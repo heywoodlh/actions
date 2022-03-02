@@ -12,7 +12,7 @@ jobs:
       -
         name: Download spodcast repository
         run: |
-          git clone https://github.com/heywoodlh/Spodcast spodcast
+          git clone https://github.com/Yetangitu/Spodcast spodcast
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
