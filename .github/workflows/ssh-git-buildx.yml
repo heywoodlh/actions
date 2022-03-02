@@ -43,7 +43,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/ssh-git:latest
-          run: echo "::set-output name=version::$(dpkg -l | grep ssh-git-server | awk '{print $3}' | cut -d':' -f2 | cut -d'p' -f1)"
+          run: echo "::set-output name=version::$(dpkg -l | grep openssh-server | awk '{print $3}' | cut -d':' -f2 | cut -d'p' -f1)"
       -
         name: Build and push heywoodlh/ssh-git:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
