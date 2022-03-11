@@ -37,7 +37,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: ./hydrogen
-          file: ./hydrogen/Dockerfile
+          file: ./hydrogen/Dockerfile-dev
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
           tags: heywoodlh/hydrogen:latest,heywoodlh/hydrogen:${{ steps.date.outputs.date }}
