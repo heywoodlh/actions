@@ -2,7 +2,7 @@ name: nim-buildx
 
 on:
   schedule:
-        - cron: "30 2 * * Sun"
+        - cron: "0 1 * * Sun"
   workflow_dispatch:
   
 jobs:
