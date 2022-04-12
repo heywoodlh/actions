@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: clone https://github.com/Eugeny/warpgate
+        name: clone https://github.com/warp-tech/warpgate
         uses: actions/checkout@master
         with:
-          name: Eugeny/warpgate 
-          repository: Eugeny/warpgate
+          name: warp-tech/warpgate 
+          repository: warp-tech/warpgate
           path: ./warpgate
       -
         name: Set up QEMU
