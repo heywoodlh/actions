@@ -35,7 +35,6 @@ jobs:
           context: ./warpgate
           file: ./warpgate/docker/Dockerfile
           platforms: linux/amd64,linux/arm64
-          load: true
           push: false
           tags: heywoodlh/warpgate:latest
       - 
