@@ -48,7 +48,8 @@ jobs:
         with:
           image: heywoodlh/metasploit:latest
           run: |
-            echo ::set-output name=version::"$(msfconsole --version 2> >(awk '{print $3}' | cut -d- -f1))"
+            msfconsole --version 2> >(tee /tmp/msf-version.txt) >/dev/null
+            echo ::set-output name=version::"$(cat /tmp/msf-version.txt | awk '{print $3}' | cut -d- -f1)"
       -
         name: Build and push heywoodlh/metasploit
         uses: docker/build-push-action@v2
