@@ -47,9 +47,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/metasploit:latest
-          run: |
-            msfconsole --version 2> >(tee /tmp/msf-version.txt) >/dev/null
-            echo ::set-output name=version::"$(cat /tmp/msf-version.txt | awk '{print $3}' | cut -d- -f1)"
+          run: echo ::set-output name=version::"$(msfconsole --version |& awk '{print $3}' | cut -d- -f1)"
       -
         name: Build and push heywoodlh/metasploit
         uses: docker/build-push-action@v2
