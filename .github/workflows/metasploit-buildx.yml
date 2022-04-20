@@ -40,14 +40,14 @@ jobs:
       - 
         name: Get current month
         id: date
-        run: echo "::set-output name=date::$(date +%Y_%m_snapshot)"
+        run: echo "::set-output name=date::$(date +%Y_%m)"
       - 
         name: Get metasploit version
         id: version
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/metasploit:latest
-          run: echo ::set-output name=version::"$(cat /opt/metasploit-framework/LICENSE | grep -i 'This product includes metasploit-framework' | grep -o '[^ ]*$')"
+          run: echo "::set-output name=version::$(cat /opt/metasploit-framework/LICENSE | grep -i 'This product includes metasploit-framework' | grep -o '[^ ]*$')"
       -
         name: Build and push heywoodlh/metasploit
         uses: docker/build-push-action@v2
@@ -56,4 +56,4 @@ jobs:
           file: ./dockerfiles/metasploit/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/metasploit:latest,heywoodlh/metasploit:${{ steps.version.outputs.version }},heywoodlh/metasploit:${{ steps.version.outputs.version }}-${{ steps.date.output.date }},heywoodlh/metasploit:${{ steps.date.output.date }}
+          tags: heywoodlh/metasploit:latest,heywoodlh/metasploit:${{ steps.version.outputs.version }},heywoodlh/metasploit:${{ steps.version.outputs.version }}-${{ steps.date.outputs.date }},heywoodlh/metasploit:${{ steps.date.outputs.date }}
