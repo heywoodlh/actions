@@ -47,7 +47,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/metasploit:latest
-          run: echo ::set-output name=version::"$(msfconsole --version |& awk '{print $3}' | cut -d- -f1)"
+          run: echo ::set-output name=version::"$(cat /opt/metasploit-framework/LICENSE | grep -i 'This product includes metasploit-framework' | grep -o '[^ ]*$')"
       -
         name: Build and push heywoodlh/metasploit
         uses: docker/build-push-action@v2
