@@ -42,7 +42,7 @@ jobs:
         id: version
         uses: addnab/docker-run-action@v3
         with:
-          image: heywoodlh/dockerfiles:latest
+          image: heywoodlh/guerrillamail:latest
           run: echo "::set-output name=version::$(pip freeze | grep 'python-guerrillamail' | cut -d= -f3)"
       -
         name: Build and push heywoodlh/guerrillamail
