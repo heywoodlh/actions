@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: clone https://github.com/heywoodlh/filesystem-livesync
+        name: clone https://github.com/vrtmrz/filesystem-livesync
         uses: actions/checkout@master
         with:
-          name: heywoodlh/filesystem-livesync
-          repository: heywoodlh/filesystem-livesync
+          name: vrtmrz/filesystem-livesync
+          repository: vrtmrz/filesystem-livesync
           path: ./filesystem-livesync
       -
         name: Set up QEMU
