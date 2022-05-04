@@ -1,0 +1,59 @@
+name: gophish-buildx
+
+on:
+  schedule:
+        - cron: "0 4 * * Sun"
+  workflow_dispatch:
+  
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/gophish/gophish
+        uses: actions/checkout@master
+        with:
+          name: gophish/gophish
+          repository: gophish/gophish
+          path: ./gophish
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - 
+        name: Get current month
+        id: date
+        run: echo "::set-output name=date::$(date +%Y_%m)"
+      -
+        name: Build and push heywoodlh/gophish
+        uses: docker/build-push-action@v2
+        with:
+          context: ./gophish
+          file: ./gophish/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/gophish:latest
+      - 
+        name: Get gophish version
+        id: version
+        uses: addnab/docker-run-action@v3
+        with:
+          image: heywoodlh/gophish:latest
+          run: echo "::set-output name=version::$()"
+      -
+        name: Build and push heywoodlh/gophish:${{ steps.version.outputs.version }}
+        uses: docker/build-push-action@v2
+        with:
+          context: ./gophish
+          file: ./gophish/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/gophish:latest,heywoodlh/gophish:${{ steps.version.outputs.version }}
