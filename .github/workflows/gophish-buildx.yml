@@ -47,7 +47,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/gophish:latest
-          run: echo "::set-output name=version::$()"
+          run: echo "::set-output name=version::$(cat /opt/gophish/VERSION)"
       -
         name: Build and push heywoodlh/gophish:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
