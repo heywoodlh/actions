@@ -43,7 +43,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/lokis-portal:latest
-          run: echo "::set-output name=version::$(cat /opt/lokis-portal/VERSION)"
+          run: echo "::set-output name=version::$(cat /var/www/html/VERSION)"
       -
         name: Build and push heywoodlh/lokis-portal:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
