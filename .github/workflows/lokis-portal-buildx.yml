@@ -1,0 +1,55 @@
+name: lokis-portal-buildx
+
+on:
+  schedule:
+    - cron: "0 1 * * Sat"
+  workflow_dispatch:
+  
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/heywoodlh/dockerfiles
+        uses: actions/checkout@master
+        with:
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push heywoodlh/lokis-portal
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/lokis-portal
+          file: ./dockerfiles/lokis-portal/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/lokis-portal:latest
+      - 
+        name: Get lokis-portal version
+        id: version
+        uses: addnab/docker-run-action@v3
+        with:
+          image: heywoodlh/lokis-portal:latest
+          run: echo "::set-output name=version::$(cat /opt/lokis-portal/VERSION)"
+      -
+        name: Build and push heywoodlh/lokis-portal:${{ steps.version.outputs.version }}
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/lokis-portal
+          file: ./dockerfiles/lokis-portal/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/lokis-portal:latest,heywoodlh/lokis-portal:${{ steps.version.outputs.version }}
