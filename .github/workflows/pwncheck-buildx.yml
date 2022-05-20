@@ -2,7 +2,7 @@ name: pwncheck-buildx
 
 on:
   schedule:
-    - cron: "0 0 * * Sun"
+    - cron: "15 1 * * Sat"
   workflow_dispatch:
   
 jobs:
