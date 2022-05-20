@@ -13,8 +13,8 @@ jobs:
         name: clone https://github.com/selftaught/PwnCheck
         uses: actions/checkout@main
         with:
-          name: heywoodlh/PwnCheck
-          repository: heywoodlh/PwnCheck
+          name: selftaught/PwnCheck
+          repository: selftaught/PwnCheck
           path: ./pwncheck
       -
         name: Set up QEMU
