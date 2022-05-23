@@ -32,8 +32,8 @@ jobs:
         name: Build and push heywoodlh/gitleaks
         uses: docker/build-push-action@v2
         with:
-          context: ./gitleaks
-          file: ./gitleaks/Dockerfile
+          context: /go/src/github.com/zricethezav/gitleaks
+          file: /go/src/github.com/zricethezav/gitleaks/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
           tags: heywoodlh/gitleaks:latest
@@ -48,8 +48,8 @@ jobs:
         name: Build and push heywoodlh/gitleaks:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
         with:
-          context: ./gitleaks
-          file: ./gitleaks/Dockerfile
+          context: /go/src/github.com/zricethezav/gitleaks
+          file: /go/src/github.com/zricethezav/gitleaks/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
           tags: heywoodlh/gitleaks:latest,heywoodlh/gitleaks:${{ steps.version.outputs.version }}
