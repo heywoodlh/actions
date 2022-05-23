@@ -15,7 +15,7 @@ jobs:
         with:
           name: zricethezav/gitleaks 
           repository: zricethezav/gitleaks 
-          path: ./gitleaks
+          path: /go/src/github.com/zricethezav/gitleaks
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
