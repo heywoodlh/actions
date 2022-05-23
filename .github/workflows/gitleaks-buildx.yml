@@ -44,10 +44,6 @@ jobs:
         with:
           image: heywoodlh/gitleaks:latest
           run: echo "::set-output name=version::$(gitleaks version)"
-      - 
-        name: Get gitleaks version
-        id: version
-        run: echo "::set-output name=version::$(gitleaks version)"
       -
         name: Build and push heywoodlh/gitleaks:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
