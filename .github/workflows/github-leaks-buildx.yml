@@ -36,8 +36,8 @@ jobs:
         name: Build and push heywoodlh/github-leaks:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
         with:
-          context: ./dockerfiles
-          file: ./dockerfiles/Dockerfile
+          context: ./dockerfiles/github-leaks
+          file: ./dockerfiles/github-leaks/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
           tags: heywoodlh/github-leaks:latest,heywoodlh/github-leaks:${{ steps.version.outputs.version }}
