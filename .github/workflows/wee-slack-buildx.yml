@@ -44,7 +44,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/wee-slack:latest
-          run: echo "::set-output name=version::$(grep 'SCRIPT_VERSION =' /weechat/.weechat/python/wee_slack.py | awk '{print $3}' | tr -d '"')"
+          run: echo "::set-output name=version::$(grep 'SCRIPT_VERSION =' /usr/share/weechat/python/wee_slack.py | awk '{print $3}' | tr -d '"')"
       -
         name: Build and push heywoodlh/wee-slack:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
