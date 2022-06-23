@@ -43,7 +43,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/nikto:latest
-          run: echo "::set-output name=version::$(nikto -Version | grep 'Nikto main' | awk '{print $3}')"
+          run: echo "::set-output name=version::$(nikto.pl -Version | grep 'Nikto main' | awk '{print $3}')"
       -
         name: Build and push heywoodlh/nikto:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
