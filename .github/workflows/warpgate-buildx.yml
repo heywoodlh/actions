@@ -36,14 +36,14 @@ jobs:
           file: ./warpgate/docker/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache-new,mode=max
+          cache-from: type=local,src=.buildx-cache
+          cache-to: type=local,dest=.buildx-cache-new,mode=max
           tags: heywoodlh/warpgate:latest
       - 
         name: Move cache
         run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache
+          rm -rf .buildx-cache
+          mv .buildx-cache-new .buildx-cache
       - 
         name: Get warpgate version
         id: version
@@ -59,5 +59,5 @@ jobs:
           file: ./warpgate/docker/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-from: type=local,src=.buildx-cache
           tags: heywoodlh/warpgate:latest,heywoodlh/warpgate:${{ steps.version.outputs.version }}
