@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: clone https://github.com/sullo/gotify-matrix-bot
+        name: clone https://github.com/Ondolin/gotify-matrix-bot
         uses: actions/checkout@master
         with:
-          name: sullo/gotify-matrix-bot 
-          repository: sullo/gotify-matrix-bot 
+          name: Ondolin/gotify-matrix-bot 
+          repository: Ondolin/gotify-matrix-bot 
           path: ./gotify-matrix-bot
       -
         name: Set up QEMU
