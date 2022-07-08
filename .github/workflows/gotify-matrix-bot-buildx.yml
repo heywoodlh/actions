@@ -2,7 +2,7 @@ name: gotify-matrix-bot-buildx
 
 on:
   schedule:
-    - cron: "0 2 * * Sat"
+    - cron: "15 3 * * Sun"
   workflow_dispatch:
   
 jobs:
