@@ -34,7 +34,7 @@ jobs:
         with:
           context: ./amass
           file: ./amass/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/armhf
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: heywoodlh/amass:latest
       - 
@@ -50,7 +50,7 @@ jobs:
         with:
           context: ./amass
           file: ./amass/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/armhf
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: heywoodlh/amass:latest,heywoodlh/amass:${{ steps.version.outputs.version }}
 
