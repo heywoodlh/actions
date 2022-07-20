@@ -2,7 +2,7 @@ name: nfcapd-buildx
 
 on:
   schedule:
-    - cron: "0 2 * * Sat"
+    - cron: "15 2 * * Sat"
   workflow_dispatch:
   
 jobs:
