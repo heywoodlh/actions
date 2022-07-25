@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: clone https://github.com/heywoodlh/dockerfiles
+        name: clone https://github.com/heywoodlh/Spodcast
         uses: actions/checkout@master
         with:
-          name: heywoodlh/dockerfiles
-          repository: heywoodlh/dockerfiles
-          path: ./dockerfiles
+          name: heywoodlh/Spodcast
+          repository: heywoodlh/Spodcast
+          path: ./Spodcast
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -36,8 +36,8 @@ jobs:
         name: Build and push heywoodlh/spodcast-web
         uses: docker/build-push-action@v2
         with:
-          context: ./dockerfiles/spodcast-web
-          file: ./dockerfiles/spodcast-web/Dockerfile
+          context: ./Spodcast
+          file: ./Spodcast/Dockerfile.web
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
           tags: heywoodlh/spodcast-web:latest,heywoodlh/spodcast-web:${{ steps.date.outputs.date }}
