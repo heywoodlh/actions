@@ -38,7 +38,7 @@ jobs:
         name: Get lacework-cli version
         id: version
         run: |
-          echo "::set-output name=version::$(docker run -it --rm heywoodlh/lacework-cli:latest version | awk '{print $2}' | head -1)"
+          echo "::set-output name=version::$(docker run -t --rm heywoodlh/lacework-cli:latest version | awk '{print $2}' | head -1)"
       -
         name: Build and push heywoodlh/lacework-cli:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
