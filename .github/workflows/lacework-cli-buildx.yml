@@ -12,7 +12,7 @@ jobs:
       -
         name: Download lacework-cli repository
         run: |
-          git clone https://github.com/heywoodlh/go-sdk 
+          git clone https://github.com/heywoodlh/go-sdk -b multiarch-dockerfile --depth=1
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
