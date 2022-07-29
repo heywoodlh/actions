@@ -34,10 +34,13 @@ jobs:
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
           tags: heywoodlh/lacework-cli:latest
-      -
-        name: Get lacework-cli version 
+      - 
+        name: Get lacework-cli version
         id: version
-        run: echo "::set-output name=version::$(lacework version | awk '{print $2}')"
+        uses: addnab/docker-run-action@v3
+        with:
+          image: heywoodlh/lacework-cli:latest
+          run: echo "::set-output name=version::$(lacework version | awk '{print $2}' | head -1)"
       -
         name: Build and push heywoodlh/lacework-cli:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
