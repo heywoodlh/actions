@@ -1,0 +1,52 @@
+name: speedtest-cli-buildx
+
+on:
+  schedule:
+    - cron: "15 4 * * Sun"
+  workflow_dispatch:
+  
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Download speedtest-cli repository
+        run: |
+          git clone https://github.com/heywoodlh/dockerfiles --depth=1
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push heywoodlh/speedtest-cli
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles
+          file: ./dockerfiles/speedtest-cli/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/speedtest-cli:latest
+      - 
+        name: Get speedtest-cli version
+        id: version
+        uses: addnab/docker-run-action@v3
+        with:
+          image: heywoodlh/speedtest-cli:latest
+          run: echo "::set-output name=version::$(apk --no-cache list | grep speedtest-cli | cut -d'-' -f3)"
+      -
+        name: Build and push heywoodlh/speedtest-cli:${{ steps.version.outputs.version }}
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles
+          file: ./dockerfiles/speedtest-cli/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/speedtest-cli:${{ steps.version.outputs.version }}
