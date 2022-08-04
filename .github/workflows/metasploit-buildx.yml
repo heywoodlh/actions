@@ -46,7 +46,7 @@ jobs:
       - 
         name: Get metasploit version
         id: version
-        run: echo "::set-output name=version::$(docker run -it --rm heywoodlh/metasploit-test msfconsole --version | tr -d ' ' | cut -d':' -f2 | cut -d'-' -f1)"
+        run: echo ::set-output name=version::$(echo -n "$(docker run -it --rm heywoodlh/metasploit msfconsole --version)" | tr -d ' ' | cut -d':' -f2 | cut -d'-' -f1)
       -
         name: Build and push heywoodlh/metasploit
         uses: docker/build-push-action@v2
