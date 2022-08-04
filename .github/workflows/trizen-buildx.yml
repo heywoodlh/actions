@@ -41,9 +41,9 @@ jobs:
         name: Run tests
         run: |
           docker run --privileged --rm tonistiigi/binfmt --install all
-          docker run -it --rm --platform='linux/amd64' heywoodlh/trizen-test:latest 
-          docker run -it --rm --platform='linux/arm64' heywoodlh/trizen-test:latest 
-          docker run -it --rm --platform='linux/arm/v7' heywoodlh/trizen-test:latest
+          docker run -i --rm --platform='linux/amd64' heywoodlh/trizen-test:latest 
+          docker run -i --rm --platform='linux/arm64' heywoodlh/trizen-test:latest 
+          docker run -i --rm --platform='linux/arm/v7' heywoodlh/trizen-test:latest
       - 
         name: Get trizen version
         id: version
