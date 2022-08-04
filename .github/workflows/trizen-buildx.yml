@@ -8,11 +8,6 @@ on:
 jobs:
   docker:
     runs-on: ubuntu-latest
-    services:
-      registry:
-        image: registry:2
-        ports:
-          - 5000:5000
     steps:
       -
         name: clone https://github.com/heywoodlh/dockerfiles
@@ -41,22 +36,18 @@ jobs:
           file: ./dockerfiles/trizen/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           target: test
-          push: true
-          tags: localhost:5000/heywoodlh/trizen-test:latest
-      - 
-        name: Get trizen version
-        id: version
-        uses: addnab/docker-run-action@v3
-        with:
-          image: localhost:5000/heywoodlh/trizen-test:latest
-          run: echo "::set-output name=version::$(pacman -Q | grep trizen | cut -d':' -f2)"
+          tags: heywoodlh/trizen-test:latest
       -
         name: Run tests
         run: |
           docker run --privileged --rm tonistiigi/binfmt --install all
-          docker run -it --rm --platform='linux/amd64' localhost:5000/heywoodlh/trizen-test 
-          docker run -it --rm --platform='linux/arm64' localhost:5000/heywoodlh/trizen-test 
-          docker run -it --rm --platform='linux/arm/v7' localhost:5000/heywoodlh/trizen-test 
+          docker run -it --rm --platform='linux/amd64' heywoodlh/trizen-test:latest 
+          docker run -it --rm --platform='linux/arm64' heywoodlh/trizen-test:latest 
+          docker run -it --rm --platform='linux/arm/v7' heywoodlh/trizen-test:latest
+      - 
+        name: Get trizen version
+        id: version
+        run: echo "::set-output name=version::$(docker run -it --rm heywoodlh/trizen-test pacman -Q | grep trizen | cut -d':' -f2)"
       -
         name: Build and push heywoodlh/trizen
         uses: docker/build-push-action@v2
