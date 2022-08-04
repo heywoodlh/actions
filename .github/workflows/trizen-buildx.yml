@@ -35,6 +35,7 @@ jobs:
           context: ./dockerfiles/trizen
           file: ./dockerfiles/trizen/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
+          load: true
           target: test
           tags: heywoodlh/trizen-test:latest
       -
