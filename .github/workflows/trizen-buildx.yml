@@ -34,7 +34,6 @@ jobs:
         with:
           context: ./dockerfiles/trizen
           file: ./dockerfiles/trizen/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/armhf
           load: true
           target: test
           tags: heywoodlh/trizen-test:latest
@@ -43,8 +42,6 @@ jobs:
         run: |
           docker run --privileged --rm tonistiigi/binfmt --install all
           docker run -i --rm --platform='linux/amd64' heywoodlh/trizen-test:latest 
-          docker run -i --rm --platform='linux/arm64' heywoodlh/trizen-test:latest 
-          docker run -i --rm --platform='linux/arm/v7' heywoodlh/trizen-test:latest
       - 
         name: Get trizen version
         id: version
