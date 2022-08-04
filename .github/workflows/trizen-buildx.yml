@@ -45,7 +45,7 @@ jobs:
       - 
         name: Get trizen version
         id: version
-        run: echo "::set-output name=version::$(docker run -it --rm heywoodlh/trizen-test pacman -Q | grep trizen | cut -d':' -f2)"
+        run: echo "::set-output name=version::$(docker run -i --rm heywoodlh/trizen-test pacman -Q | grep trizen | cut -d':' -f2)"
       -
         name: Build and push heywoodlh/trizen
         uses: docker/build-push-action@v2
