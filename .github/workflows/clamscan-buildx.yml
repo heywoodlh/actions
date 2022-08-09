@@ -39,7 +39,10 @@ jobs:
       - 
         name: Get clamscan version
         id: version
-        run: echo "::set-output name=version::$(docker run -i --rm heywoodlh/clamscan apk --no-cache list | grep clamav-scanner | awk '{print $1}' | cut -d'-' -f3')"
+        uses: addnab/docker-run-action@v3
+        with:
+          image: heywoodlh/clamscan:latest
+          run: echo "::set-output name=version::$(apk --no-cache list | grep clamav-scanner | awk '{print $1}' | cut -d'-' -f3')"
       -
         name: Build and push heywoodlh/clamscan
         uses: docker/build-push-action@v2
