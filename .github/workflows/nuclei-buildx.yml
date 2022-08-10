@@ -43,7 +43,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/nuclei:latest
-          run: echo "::set-output name=version::$(nuclei --version &> /tmp/version.txt && tail -1 /tmp/version.txt | cut -d': ' -f 2 | tr -d ' ')"
+          run: echo "::set-output name=version::$(nuclei --version &> /tmp/version.txt && tail -1 /tmp/version.txt | cut -d':' -f 2 | tr -d ' ')"
       -
         name: Build and push heywoodlh/nuclei:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
