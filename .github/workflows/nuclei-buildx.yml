@@ -2,7 +2,7 @@ name: nuclei-buildx
 
 on:
   schedule:
-        - cron: "0 4 * * Sun"
+        - cron: "30 3 * * Sat"
   workflow_dispatch:
   
 jobs:
