@@ -2,7 +2,7 @@ name: inim-buildx
 
 on:
   schedule:
-        - cron: "0 1 * * Sun"
+        - cron: "0 5 * * Sun"
   workflow_dispatch:
   
 jobs:
