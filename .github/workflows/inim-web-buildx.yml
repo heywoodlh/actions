@@ -43,7 +43,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/inim-web:latest
-          run: echo "::set-output name=version::$(grep version /app/pkgs/inim*/inim-web.nimble | grep -v 'versions' | awk '{print $NF}' | tr -d '"')"
+          run: echo "::set-output name=version::$(grep version /app/pkgs/inim*/inim.nimble | grep -v 'versions' | awk '{print $NF}' | tr -d '"')"
       -
         name: Build and push heywoodlh/inim-web
         uses: docker/build-push-action@v2
