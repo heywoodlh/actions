@@ -2,7 +2,7 @@ name: rdp-kali-linux-buildx
 
 on:
   schedule:
-        - cron: "0 5 * * Sun"
+        - cron: "30 3 * * Sat"
   workflow_dispatch:
   
 jobs:
