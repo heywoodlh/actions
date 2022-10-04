@@ -34,7 +34,7 @@ jobs:
         with:
           context: ./dockerfiles/rdp-kali-linux
           file: ./dockerfiles/rdp-kali-linux/Dockerfile
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
           tags: heywoodlh/rdp-kali-linux:latest
       - 
@@ -51,6 +51,6 @@ jobs:
         with:
           context: ./dockerfiles/rdp-kali-linux
           file: ./dockerfiles/rdp-kali-linux/Dockerfile
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
           tags: heywoodlh/rdp-kali-linux:latest,heywoodlh/rdp-kali-linux:${{ steps.version.outputs.version }},heywoodlh/rdp-kali-linux:${{ steps.version.outputs.version}}-${{ steps.date.outputs.date }}
