@@ -40,7 +40,10 @@ jobs:
       - 
         name: Get current version
         id: version
-        run: echo "::set-output name=version::$(grep VERSION_ID /etc/os-release | cut -d'=' -f2 | tr -d \")"
+        uses: addnab/docker-run-action@v3
+        with:
+          image: heywoodlh/apt-mirror:latest
+          run: echo "::set-output name=version::$(grep VERSION_ID /etc/os-release | cut -d'=' -f2 | tr -d \")"
       -
         name: Build and push heywoodlh/apt-mirror
         uses: docker/build-push-action@v2
