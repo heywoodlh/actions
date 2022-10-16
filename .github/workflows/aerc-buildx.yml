@@ -1,0 +1,55 @@
+name: aerc-buildx
+
+on:
+  schedule:
+        - cron: "45 5 * * Sun"
+  workflow_dispatch:
+  
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/heywoodlh/dockerfiles
+        uses: actions/checkout@master
+        with:
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push heywoodlh/aerc
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/aerc
+          file: ./dockerfiles/aerc/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/aerc:latest
+      - 
+        name: Get current version
+        id: version
+        uses: addnab/docker-run-action@v3
+        with:
+          image: heywoodlh/aerc:latest
+          run: echo "::set-output name=version::$(aerc -v | awk '{print $2}')"
+      -
+        name: Build and push heywoodlh/aerc
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/aerc
+          file: ./dockerfiles/aerc/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/aerc:latest,heywoodlh/aerc:${{ steps.version.outputs.version }}
