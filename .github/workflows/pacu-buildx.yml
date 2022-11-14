@@ -13,8 +13,8 @@ jobs:
         name: clone https://github.com/RhinoSecurityLabs/pacu
         uses: actions/checkout@master
         with:
-          name: warp-tech/pacu 
-          repository: warp-tech/pacu
+          name: RhinoSecurityLabs/pacu 
+          repository: RhinoSecurityLabs/pacu
           path: ./pacu
       -
         name: Set up QEMU
