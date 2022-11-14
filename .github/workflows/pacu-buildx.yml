@@ -1,0 +1,55 @@
+name: pacu-buildx
+
+on:
+  schedule:
+        - cron: "0 4 * * Sat"
+  workflow_dispatch:
+  
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/warp-tech/pacu
+        uses: actions/checkout@master
+        with:
+          name: warp-tech/pacu 
+          repository: warp-tech/pacu
+          path: ./pacu
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push heywoodlh/pacu
+        uses: docker/build-push-action@v2
+        with:
+          context: ./pacu
+          file: ./pacu/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/pacu:latest
+      - 
+        name: Get pacu version
+        id: version
+        uses: addnab/docker-run-action@v3
+        with:
+          image: heywoodlh/pacu:latest
+          run: echo "::set-output name=version::$(grep '^version' /usr/src/pacu/pyproject.toml | awk '{print $3}' | tr -d '\"')"
+      -
+        name: Build and push heywoodlh/pacu
+        uses: docker/build-push-action@v2
+        with:
+          context: ./pacu
+          file: ./pacu/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/pacu:latest,heywoodlh/pacu:${{ steps.version.outputs.version }}
