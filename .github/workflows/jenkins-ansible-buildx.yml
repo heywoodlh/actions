@@ -1,8 +1,8 @@
 name: jenkins-ansible-buildx
 
 on:
-  schedule:
-    - cron: "0 3 * * Sun"
+#  schedule:
+#    - cron: "0 3 * * Sun"
   workflow_dispatch:
   
 jobs:
