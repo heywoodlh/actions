@@ -1,8 +1,8 @@
 name: kali-minimal-buildx
 
 on:
-  schedule:
-        - cron: "30 7 * * Sun"
+#  schedule:
+#        - cron: "30 7 * * Sun"
   workflow_dispatch:
   
 jobs:
