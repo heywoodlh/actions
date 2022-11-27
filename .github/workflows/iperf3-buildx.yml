@@ -40,7 +40,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/iperf3:latest
-          run: echo "::set-output name=version::$(dpkg -l | grep iperf3 | awk '{print $3}')"
+          run: echo "::set-output name=version::$(dpkg -l | grep iperf3 | awk '{print $3}' | cut -d'+' -f1)"
       -
         name: Build and push heywoodlh/iperf3:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
