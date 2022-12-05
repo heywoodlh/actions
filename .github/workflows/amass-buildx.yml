@@ -1,8 +1,8 @@
 name: amass-buildx
 
 on:
-  schedule:
-    - cron: "45 0 * * Sat"
+#  schedule:
+#    - cron: "45 0 * * Sat"
   workflow_dispatch:
   
 jobs:

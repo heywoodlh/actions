@@ -1,0 +1,40 @@
+name: evilginx2-buildx
+
+on:
+  schedule:
+    - cron: "30 6 * * Sun"
+  workflow_dispatch:
+  
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Download evilginx2 repository
+        run: |
+          git clone https://github.com/heywoodlh/dockerfiles --depth=1
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - 
+        name: Get evilginx2 version
+        id: version
+        run: echo "::set-output name=version::$(curl --silent 'https://raw.githubusercontent.com/kgretzky/evilginx2/master/core/banner.go' | grep 'VERSION = ' | cut -d'=' -f2 | tr -d '\"' | tr -d " ")"
+      -
+        name: Build and push heywoodlh/evilginx2:${{ steps.version.outputs.version }}
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles
+          file: ./dockerfiles/evilginx2/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/evilginx2:latest,heywoodlh/evilginx2:${{ steps.version.outputs.version }}
