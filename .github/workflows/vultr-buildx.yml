@@ -28,6 +28,10 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - 
+        name: Get vultr version
+        id: version
+        run: echo "::set-output name=version::$(cat ./dockerfiles/vultr/VERSION)"
       -
         name: Build and push heywoodlh/vultr
         uses: docker/build-push-action@v2
@@ -36,13 +40,4 @@ jobs:
           file: ./dockerfiles/vultr/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/vultr:latest
-      -
-        name: Build and push heywoodlh/vultr
-        uses: docker/build-push-action@v2
-        with:
-          context: ./dockerfiles/vultr
-          file: ./dockerfiles/vultr/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/armhf
-          push: true
-          tags: heywoodlh/vultr:latest
+          tags: heywoodlh/vultr:latest,heywoodlh/vultr:${{ steps.version.outputs.version }}
