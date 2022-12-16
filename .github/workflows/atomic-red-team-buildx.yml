@@ -34,7 +34,7 @@ jobs:
         with:
           context: ./dockerfiles/atomic-red-team
           file: ./dockerfiles/atomic-red-team/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: heywoodlh/atomic-red-team:latest
       - 
@@ -49,6 +49,6 @@ jobs:
         with:
           context: ./dockerfiles/atomic-red-team
           file: ./dockerfiles/atomic-red-team/Dockerfile
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64
           push: true
           tags: heywoodlh/atomic-red-team:latest,heywoodlh/atomic-red-team:${{ steps.version.outputs.version }}
