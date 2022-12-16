@@ -51,4 +51,4 @@ jobs:
           file: ./dockerfiles/atomic-red-team/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: heywoodlh/atomic-red-team:latest,heywoodlh/atomic-red-team:${{ env.version }
+          tags: heywoodlh/atomic-red-team:latest,heywoodlh/atomic-red-team:${{ env.version }}
