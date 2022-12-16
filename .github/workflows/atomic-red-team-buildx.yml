@@ -39,13 +39,8 @@ jobs:
           tags: heywoodlh/atomic-red-team:latest
       - 
         name: Get atomic-red-team version
-        uses: addnab/docker-run-action@v3
-        with:
-          image: heywoodlh/atomic-red-team:latest
-          shell: bash
-          run: |
-            echo version=$(pwsh -c "get-module -listavailable -name invoke-atomicredteam | format-table -property version -hidetableheaders | xargs") >> $GITHUB_ENV
-            echo "Done"
+        run: |
+          echo version=$(docker run -it --rm --entrypoint 'pwsh' heywoodlh/atomic-red-team:latest -c "get-module -listavailable -name invoke-atomicredteam | format-table -property version -hidetableheaders | xargs") >> $GITHUB_ENV
       -
         name: Build and push heywoodlh/atomic-red-team
         uses: docker/build-push-action@v2
