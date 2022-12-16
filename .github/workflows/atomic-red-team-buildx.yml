@@ -42,7 +42,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/atomic-red-team:latest
-          options: -v $GITHUB_ENV:/tmp/github.env
+          options: -v $(realpath ${GITHUB_ENV}):/tmp/github.env
           shell: bash
           run: echo version=$(pwsh -c "get-module -listavailable -name invoke-atomicredteam | format-table -property version -hidetableheaders | xargs") >> /tmp/github.env
       -
