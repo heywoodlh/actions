@@ -42,7 +42,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: heywoodlh/atomic-red-team:latest
-          run: bash -c 'echo ::set-output name=version::$(pwsh -c "get-module -listavailable -name invoke-atomicredteam | format-table -property version -hidetableheaders | xargs")' 
+          run: bash -c 'echo version=$(pwsh -c "get-module -listavailable -name invoke-atomicredteam | format-table -property version -hidetableheaders | xargs") >> $GITHUB_ENV'
       -
         name: Build and push heywoodlh/atomic-red-team
         uses: docker/build-push-action@v2
@@ -51,4 +51,4 @@ jobs:
           file: ./dockerfiles/atomic-red-team/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: heywoodlh/atomic-red-team:latest,heywoodlh/atomic-red-team:${{ steps.version.outputs.version }}
+          tags: heywoodlh/atomic-red-team:latest,heywoodlh/atomic-red-team:${{ env.version }
