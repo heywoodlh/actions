@@ -45,6 +45,7 @@ jobs:
           shell: bash
           run: |
             echo version=$(pwsh -c "get-module -listavailable -name invoke-atomicredteam | format-table -property version -hidetableheaders | xargs") >> $GITHUB_ENV
+            echo "Done"
       -
         name: Build and push heywoodlh/atomic-red-team
         uses: docker/build-push-action@v2
