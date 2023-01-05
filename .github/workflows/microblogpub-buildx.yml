@@ -34,6 +34,6 @@ jobs:
         with:
           context: ./microblog.pub
           file: ./microblog.pub/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/armhf
+          platforms: linux/amd64
           push: true
           tags: heywoodlh/microblogpub:latest,heywoodlh/microblogpub:${{ steps.version.outputs.version }}
