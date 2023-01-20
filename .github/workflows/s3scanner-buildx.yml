@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: clone https://github.com/RhinoSecurityLabs/s3scanner
+        name: clone https://github.com/sa7mon/S3Scanner
         uses: actions/checkout@master
         with:
-          name: RhinoSecurityLabs/s3scanner 
-          repository: RhinoSecurityLabs/s3scanner
+          name: sa7mon/S3Scanner 
+          repository: sa7mon/S3Scanner
           path: ./s3scanner
       -
         name: Set up QEMU
