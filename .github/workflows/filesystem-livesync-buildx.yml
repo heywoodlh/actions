@@ -1,8 +1,8 @@
 name: filesystem-livesync-buildx
 
 on:
-  schedule:
-        - cron: "0 4 * * Sun"
+#  schedule:
+#        - cron: "0 4 * * Sun"
   workflow_dispatch:
   
 jobs:

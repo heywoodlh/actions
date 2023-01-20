@@ -1,8 +1,8 @@
-name: atomic-red-team-buildx
+name: rdp-kali-linux-full-buildx
 
 on:
   schedule:
-        - cron: "15 6 * * Sun"
+        - cron: "30 6 * * Sat"
   workflow_dispatch:
   
 jobs:
@@ -29,24 +29,24 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push heywoodlh/atomic-red-team
+        name: Build and push heywoodlh/rdp-kali-linux-full
         uses: docker/build-push-action@v2
         with:
-          context: ./dockerfiles/atomic-red-team
-          file: ./dockerfiles/atomic-red-team/Dockerfile
-          platforms: linux/amd64
+          context: ./dockerfiles/rdp-kali-linux-full
+          file: ./dockerfiles/rdp-kali-linux-full/Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
-          tags: heywoodlh/atomic-red-team:latest
+          tags: heywoodlh/rdp-kali-linux-full:latest
       - 
-        name: Get atomic-red-team version
+        name: Get rdp-kali-linux-full version
         run: |
-          echo version=$(docker run -i --rm --entrypoint 'pwsh' heywoodlh/atomic-red-team:latest -c "get-module -listavailable -name invoke-atomicredteam | format-table -property version -hidetableheaders | xargs") >> $GITHUB_ENV
+          echo version=$(docker run -i --rm --entrypoint bash heywoodlh/rdp-kali-linux-full:latest -c 'cat /etc/os-release | grep VERSION= | cut -d\" -f2') >> $GITHUB_ENV
       -
-        name: Build and push heywoodlh/atomic-red-team
+        name: Build and push heywoodlh/rdp-kali-linux-full
         uses: docker/build-push-action@v2
         with:
-          context: ./dockerfiles/atomic-red-team
-          file: ./dockerfiles/atomic-red-team/Dockerfile
-          platforms: linux/amd64
+          context: ./dockerfiles/rdp-kali-linux-full
+          file: ./dockerfiles/rdp-kali-linux-full/Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
-          tags: heywoodlh/atomic-red-team:latest,heywoodlh/atomic-red-team:${{ env.version }}
+          tags: heywoodlh/rdp-kali-linux-full:latest,heywoodlh/rdp-kali-linux-full:${{ env.version }}
