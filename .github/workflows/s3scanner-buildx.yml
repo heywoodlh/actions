@@ -39,12 +39,8 @@ jobs:
           tags: heywoodlh/s3scanner:latest
       - 
         name: Get s3scanner version
-        uses: addnab/docker-run-action@v3
-        with:
-          image: heywoodlh/s3scanner:latest
-          options: -v $GITHUB_ENV:$GITHUB_ENV -e GITHUB_ENV=$GITHUB_ENV
-          shell: bash
-          run: echo version=$(python3 -m S3Scanner --version) >> $GITHUB_ENV
+        run: |
+          echo version=$(docker run -i --rm heywoodlh/s3scanner:latest --version) >> $GITHUB_ENV
       -
         name: Build and push heywoodlh/s3scanner
         uses: docker/build-push-action@v2
