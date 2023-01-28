@@ -40,7 +40,7 @@ jobs:
       - 
         name: Get maltego version
         run: |
-          echo version=$(docker run -i --rm --entrypoint bash heywoodlh/maltego:latest dpkg -l | grep maltego | awk '{print $3}') >> $GITHUB_ENV
+          echo version=$((docker run -i --rm --entrypoint "bash" heywoodlh/maltego -c 'dpkg -l | grep maltego') | awk '{print $3}') >> $GITHUB_ENV
       -
         name: Build and push heywoodlh/maltego
         uses: docker/build-push-action@v2
