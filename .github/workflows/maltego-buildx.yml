@@ -34,7 +34,7 @@ jobs:
         with:
           context: ./dockerfiles/maltego
           file: ./dockerfiles/maltego/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/armhf
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: heywoodlh/maltego:latest
       - 
@@ -47,6 +47,6 @@ jobs:
         with:
           context: ./dockerfiles/maltego
           file: ./dockerfiles/maltego/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/armhf
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: heywoodlh/maltego:latest,heywoodlh/maltego:${{ env.version }}
