@@ -2,7 +2,7 @@ name: pandoc-buildx
 
 on:
   schedule:
-        - cron: "0 5 * * Sat"
+        - cron: "0 11 * * Sun"
   workflow_dispatch:
   
 jobs:
@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: clone https://github.com/sa7mon/S3Scanner
+        name: clone https://github.com/heywoodlh/dockerfiles
         uses: actions/checkout@master
         with:
-          name: sa7mon/S3Scanner 
-          repository: sa7mon/S3Scanner
-          path: ./pandoc
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -32,8 +32,8 @@ jobs:
         name: Build and push heywoodlh/pandoc
         uses: docker/build-push-action@v2
         with:
-          context: ./pandoc
-          file: ./pandoc/Dockerfile
+          context: ./dockerfiles/pandoc
+          file: ./dockerfiles/pandoc/Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
           tags: heywoodlh/pandoc:latest
