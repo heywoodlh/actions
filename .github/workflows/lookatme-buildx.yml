@@ -1,8 +1,8 @@
-name: s3scanner-buildx
+name: lookatme-buildx
 
 on:
   schedule:
-        - cron: "0 5 * * Sat"
+        - cron: "15 7 * * Sun"
   workflow_dispatch:
   
 jobs:
@@ -10,12 +10,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: clone https://github.com/sa7mon/S3Scanner
+        name: clone https://github.com/heywoodlh/dockerfiles
         uses: actions/checkout@master
         with:
-          name: sa7mon/S3Scanner 
-          repository: sa7mon/S3Scanner
-          path: ./s3scanner
+          name: heywoodlh/dockerfiles 
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -29,24 +29,24 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push heywoodlh/s3scanner
+        name: Build and push heywoodlh/lookatme
         uses: docker/build-push-action@v2
         with:
-          context: ./s3scanner
-          file: ./s3scanner/Dockerfile
+          context: ./dockerfiles/lookatme
+          file: ./dockerfiles/lookatme/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/s3scanner:latest
+          tags: heywoodlh/lookatme:latest
       - 
-        name: Get s3scanner version
+        name: Get lookatme version
         run: |
-          echo version=$(docker run -i --rm heywoodlh/s3scanner:latest --version) >> $GITHUB_ENV
+          echo version=$(docker run -i --rm heywoodlh/lookatme:latest --version | awk '{print $3}') >> $GITHUB_ENV
       -
-        name: Build and push heywoodlh/s3scanner
+        name: Build and push heywoodlh/lookatme
         uses: docker/build-push-action@v2
         with:
-          context: ./s3scanner
-          file: ./s3scanner/Dockerfile
+          context: ./dockerfiles/lookatme
+          file: ./dockerfiles/lookatme/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/s3scanner:latest,heywoodlh/s3scanner:${{ env.version }}
+          tags: heywoodlh/lookatme:latest,heywoodlh/lookatme:${{ env.version }}
