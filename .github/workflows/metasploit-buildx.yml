@@ -54,4 +54,4 @@ jobs:
           file: ./dockerfiles/metasploit/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/metasploit:latest,heywoodlh/metasploit:${{ env.version }},heywoodlh/metasploit:${{ env.version }}-${{ steps.date.outputs.date }},heywoodlh/metasploit:${{ steps.date.outputs.date }}
+          tags: heywoodlh/metasploit:latest,heywoodlh/metasploit:${{ env.version }},heywoodlh/metasploit:${{ env.version }}-${{ env.date }},heywoodlh/metasploit:${{ env.date }}
