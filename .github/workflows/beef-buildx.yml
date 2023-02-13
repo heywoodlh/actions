@@ -34,9 +34,13 @@ jobs:
         with:
           context: ./beef
           file: ./beef/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/armhf
+          platforms: linux/amd64
           push: true
           tags: heywoodlh/beef:latest
+      - 
+        name: Get beef version
+        run: |
+          echo version=$(docker run -i --rm --entrypoint 'bash' heywoodlh/beef:latest -c "cat /beef/VERSION | tail -1") >> $GITHUB_ENV
       - 
         name: Get beef version
         id: version
@@ -50,6 +54,6 @@ jobs:
         with:
           context: ./beef
           file: ./beef/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/armhf
+          platforms: linux/amd64
           push: true
-          tags: heywoodlh/beef:latest,heywoodlh/beef:${{ steps.version.outputs.version }}
+          tags: heywoodlh/beef:latest,heywoodlh/beef:${{ env.version }}
