@@ -49,4 +49,4 @@ jobs:
           file: ./dockerfiles/youtube-dl/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
           push: true
-          tags: heywoodlh/youtube-dl:latest,heywoodlh/youtube-dl:${{ steps.version.outputs.version }}
+          tags: heywoodlh/youtube-dl:latest,heywoodlh/youtube-dl:${{ env.version }}
