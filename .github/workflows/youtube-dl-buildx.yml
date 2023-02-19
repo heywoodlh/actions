@@ -39,11 +39,8 @@ jobs:
           tags: heywoodlh/youtube-dl:latest
       -
         name: Get youtube-dl version
-        id: version
-        uses: addnab/docker-run-action@v3
-        with:
-          image: heywoodlh/youtube-dl:latest
-          run: echo "::set-output name=version::$(/usr/bin/youtube-dl --version)"
+        run: |
+          echo version="$(docker run -i --rm heywoodlh/youtube-dl:latest --version)" >> $GITHUB_ENV
       -
         name: Build and push heywoodlh/youtube-dl
         uses: docker/build-push-action@v2
