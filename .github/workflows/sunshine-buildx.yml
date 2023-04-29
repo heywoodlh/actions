@@ -54,4 +54,4 @@ jobs:
           file: ./dockerfiles/sunshine/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: heywoodlh/sunshine:latest,heywoodlh/sunshine:${{ env.version }},heywoodlh/sunshine:${{ env.version }}-${{ env.date }},heywoodlh/sunshine:${{ env.date }}
+          tags: heywoodlh/sunshine:latest,heywoodlh/sunshine:${{ env.version }}
