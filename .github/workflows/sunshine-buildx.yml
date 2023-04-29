@@ -28,21 +28,21 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      -
-        name: Build heywoodlh/sunshine locally
-        uses: docker/build-push-action@v2
-        with:
-          context: ./dockerfiles/sunshine
-          file: ./dockerfiles/sunshine/Dockerfile
-          load: true
-          tags: heywoodlh/sunshine-test:latest
-      - 
-        name: Get current month
-        run: echo date=$(date +%Y_%m) >> $GITHUB_ENV
-      -
-        name: Get sunshine version
-        run: |
-          echo version=$(docker run -i --rm --entrypoint=bash heywoodlh/sunshine-test -c "pacman -Q | grep sunshine | awk '{print $2}'") >> $GITHUB_ENV
+      #-
+        #name: Build heywoodlh/sunshine locally
+        #uses: docker/build-push-action@v2
+        #with:
+          #context: ./dockerfiles/sunshine
+          #file: ./dockerfiles/sunshine/Dockerfile
+          #load: true
+          #tags: heywoodlh/sunshine-test:latest
+      #- 
+        #name: Get current month
+        #run: echo date=$(date +%Y_%m) >> $GITHUB_ENV
+      #-
+        #name: Get sunshine version
+        #run: |
+          #echo version=$(docker run -i --rm --entrypoint=bash heywoodlh/sunshine-test -c "pacman -Q | grep sunshine | awk '{print $2}'") >> $GITHUB_ENV
       -
         name: Build and push heywoodlh/sunshine
         uses: docker/build-push-action@v2
@@ -51,4 +51,4 @@ jobs:
           file: ./dockerfiles/sunshine/Dockerfile
           platforms: linux/amd64
           push: true
-          tags: heywoodlh/sunshine:latest,heywoodlh/sunshine:${{ env.version }}
+          tags: heywoodlh/sunshine:latest
