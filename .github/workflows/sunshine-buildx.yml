@@ -35,7 +35,6 @@ jobs:
           context: ./dockerfiles/sunshine
           file: ./dockerfiles/sunshine/Dockerfile
           load: true
-          target: test
           tags: heywoodlh/sunshine-test:latest
       - name: Run test
         run: docker run -i --rm heywoodlh/sunshine-test
