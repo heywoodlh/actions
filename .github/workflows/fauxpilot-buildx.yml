@@ -9,6 +9,13 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+    - name: Use Apache Flink free_disk_space.sh
+      run: |
+        curl -L 'https://raw.githubusercontent.com/apache/flink/02d30ace69dc18555a5085eccf70ee884e73a16e/tools/azure-pipelines/free_disk_space.sh' -o ./free_disk_space.sh \
+          && chmod +x ./free_disk_space.sh \
+          && ./free_disk_space.sh \
+          && rm -f ./free_disk_space.sh 
+
       -
         name: clone https://github.com/fauxpilot/fauxpilot
         uses: actions/checkout@master
