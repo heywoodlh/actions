@@ -45,7 +45,7 @@ jobs:
       -
         name: Get metasploit version
         run: |
-          echo version=$(docker run -i --rm --entrypoint=bash heywoodlh/metasploit-test -c 'cat /opt/metasploit-framework/LICENSE' | grep -i 'This product includes metasploit-framework' | grep -o '[^ ]*$') >> $GITHUB_ENV
+          echo version=$(docker run -i --rm --entrypoint=bash heywoodlh/metasploit-test -c "grep '^metasploit-framework' /opt/metasploit-framework/version-manifest.txt  | grep -v wrapper | head -1 | awk '{print \$2}' | cut -d'+' -f1") >> $GITHUB_ENV
       -
         name: Build and push heywoodlh/metasploit
         uses: docker/build-push-action@v2
