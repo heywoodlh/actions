@@ -1,8 +1,6 @@
 name: bibliogram-buildx
 
 on:
-  schedule:
-    - cron: "30 3 * * Sun"
   workflow_dispatch:
   
 jobs:
