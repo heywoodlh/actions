@@ -1,0 +1,46 @@
+name: dalle-mini-buildx
+
+on:
+  schedule:
+    - cron: "20 2 * * Sun"
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/borisdayma/dalle-mini
+        uses: actions/checkout@master
+        with:
+          name: borisdayma/dalle-mini
+          repository: borisdayma/dalle-mini
+          path: ./dalle-mini
+      -
+        name: Use Apache Flink free_disk_space.sh
+        run: |
+          curl -L 'https://raw.githubusercontent.com/apache/flink/02d30ace69dc18555a5085eccf70ee884e73a16e/tools/azure-pipelines/free_disk_space.sh' -o ./free_disk_space.sh \
+            && chmod +x ./free_disk_space.sh \
+            && ./free_disk_space.sh \
+            && rm -f ./free_disk_space.sh
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and push heywoodlh/dalle-mini
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dalle-mini/Docker
+          file: ./dalle-mini/Docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: heywoodlh/dalle-mini:latest
