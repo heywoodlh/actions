@@ -1,0 +1,60 @@
+name: nfs-server-buildx
+
+on:
+  schedule:
+    - cron: "20 4 * * Sun"
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/N0rthernL1ghts/docker-nfs-server
+        uses: actions/checkout@master
+        with:
+          name: N0rthernL1ghts/docker-nfs-server
+          repository: N0rthernL1ghts/docker-nfs-server
+          path: ./docker-nfs-server
+      -
+        name: Use Apache Flink free_disk_space.sh
+        run: |
+          curl -L 'https://raw.githubusercontent.com/apache/flink/02d30ace69dc18555a5085eccf70ee884e73a16e/tools/azure-pipelines/free_disk_space.sh' -o ./free_disk_space.sh \
+            && chmod +x ./free_disk_space.sh \
+            && ./free_disk_space.sh \
+            && rm -f ./free_disk_space.sh
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build nfs-server locally
+        uses: docker/build-push-action@v2
+        with:
+          context: ./docker-nfs-server
+          file: ./docker-nfs-server/Dockerfile
+          load: true
+          tags: heywoodlh/nfs-server-local:latest
+      -
+        name: Get nfs-utils version
+        run: |
+          echo "(apk list | grep -E '^nfs-utils' | cut -d' ' -f1 | cut -d'-' -f3) 2> /dev/null" > get_version.sh
+          chmod +x get_version.sh
+          echo version=$(docker run -i --rm -v ./get_version.sh:/get_version.sh --entrypoint "/bin/ash" heywoodlh/nfs-server-local /get_version.sh) >> $GITHUB_ENV
+      -
+        name: Build and push heywoodlh/nfs-server
+        uses: docker/build-push-action@v2
+        with:
+          context: ./docker-nfs-server/
+          file: ./docker-nfs-server/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: heywoodlh/nfs-server:latest,heywoodlh/nfs-server:${{ env.version }}
