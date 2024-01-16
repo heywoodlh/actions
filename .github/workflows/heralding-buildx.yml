@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: "55 0 * * Sun"
   workflow_dispatch:
-  
+
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -12,7 +12,7 @@ jobs:
       -
         name: Download heralding repository
         run: |
-          git clone https://github.com/johnnykv/heralding
+          git clone https://github.com/heywoodlh/heralding
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
