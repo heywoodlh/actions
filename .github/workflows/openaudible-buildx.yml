@@ -1,0 +1,42 @@
+name: openaudible-buildx
+
+on:
+  schedule:
+        - cron: "45 6 * * Sun"
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/openaudible/openaudible_docker
+        uses: actions/checkout@master
+        with:
+          name: openaudible/openaudible_docker
+          repository: openaudible/openaudible_docker
+          path: ./openaudible_docker
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Get current month
+        run: echo date=$(date +%Y_%m) >> $GITHUB_ENV
+      -
+        name: Build and push heywoodlh/openaudible
+        uses: docker/build-push-action@v2
+        with:
+          context: ./openaudible_docker
+          file: ./openaudible_docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: heywoodlh/openaudible:latest,heywoodlh/openaudible:${{ env.date }}
