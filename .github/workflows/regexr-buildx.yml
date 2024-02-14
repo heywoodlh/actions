@@ -1,0 +1,52 @@
+name: regexr-buildx
+
+on:
+  schedule:
+        - cron: "0 7 * * Sun"
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/heywoodlh/dockerfiles
+        uses: actions/checkout@master
+        with:
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      -
+        name: Build heywoodlh/regexr locally
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/regexr
+          file: ./dockerfiles/regexr/Dockerfile
+          load: true
+          tags: heywoodlh/regexr:local
+
+      - name: Get regexr sha
+        run: echo version=$(docker run -i --rm --entrypoint=ash heywoodlh/regexr:local -c "git -C /opt/regexr log --oneline | head -1 | awk '{print \$1}'") >> $GITHUB_ENV
+
+      -
+        name: Build and push heywoodlh/regexr
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/regexr
+          file: ./dockerfiles/regexr/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: heywoodlh/regexr:latest,heywoodlh/regexr:${{ env.version }}
