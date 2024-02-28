@@ -1,0 +1,51 @@
+name: k8s-service-scanner-buildx
+
+on:
+  schedule:
+        - cron: "0 9 * * Sun"
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/heywoodlh/dockerfiles
+        uses: actions/checkout@master
+        with:
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build heywoodlh/k8s-service-scanner locally
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/k8s-service-scanner
+          file: ./dockerfiles/k8s-service-scanner/Dockerfile
+          load: true
+          tags: heywoodlh/k8s-service-scanner-local:latest
+      -
+        name: Get k8s-service-scanner version
+        run: |
+          echo version=$(docker run -i --rm --entrypoint=kubectl heywoodlh/k8s-service-scanner-local version | head -1 | cut -d':' -f2 | tr -d ' ') >> $GITHUB_ENV
+      -
+        name: Build and push heywoodlh/k8s-service-scanner
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/k8s-service-scanner
+          file: ./dockerfiles/k8s-service-scanner/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: heywoodlh/k8s-service-scanner:latest,heywoodlh/k8s-service-scanner:${{ env.version }}
