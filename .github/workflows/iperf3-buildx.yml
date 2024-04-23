@@ -37,7 +37,7 @@ jobs:
       -
         name: Get iperf3 version
         id: version
-        run: echo version=$(docker run -i --entrypoint="bash" --rm heywoodlh/iperf3:latest -c "dpkg -l iperf3 | tail -1" | awk '{print $3}' | grep -Po '\d+\.\d+') >> $GITHUB_ENV
+        run: echo version=$(docker run -i --entrypoint="ash" --rm heywoodlh/iperf3:latest -c "apk list -q | grep -E '^iperf3'" | awk '{print $1}' | sed -s 's/^iperf3-//g') >> $GITHUB_ENV
       -
         name: Build and push heywoodlh/iperf3:${{ steps.version.outputs.version }}
         uses: docker/build-push-action@v2
