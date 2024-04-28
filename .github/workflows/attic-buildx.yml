@@ -1,0 +1,76 @@
+name: attic-buildx
+
+on:
+  schedule:
+    - cron: "30 0 * * Thu"
+  workflow_dispatch:
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Install Nix
+        uses: DeterminateSystems/nix-installer-action@main
+      -
+        name: Get attic rev
+        id: rev
+        run: echo rev=$(git ls-remote https://github.com/zhaofengli/attic | head -1 | awk '{print $1}') >> $GITHUB_ENV
+      -
+        name: Build and push image
+        run: |
+          nix build -o attic.tar.gz "github:zhaofengli/attic/${{ env.rev }}#attic-server-image"
+          export image_tag="$(docker image load --input attic.tar.gz | grep 'Loaded image: ' | cut -d' ' -f3 | xargs)"
+          echo image_tag="${image_tag}" >> $GITHUB_ENV
+          docker image tag ${image_tag} docker.io/heywoodlh/attic:latest
+          docker image tag ${image_tag} docker.io/heywoodlh/attic:${{ env.rev }}
+          docker push docker.io/heywoodlh/attic:latest
+          docker push docker.io/heywoodlh/attic:${{ env.rev }}
+
+  #docker-arm64:
+  #  runs-on: [self-hosted, linux, arm64]
+  #  steps:
+  #    -
+  #      name: Set up Docker
+  #      uses: crazy-max/ghaction-setup-docker@v3
+  #    -
+  #      name: Login to DockerHub
+  #      uses: docker/login-action@v1
+  #      with:
+  #        username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #        password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #    -
+  #      name: Set up QEMU
+  #      uses: docker/setup-qemu-action@v1
+  #    -
+  #      name: Set up Docker Buildx
+  #      uses: docker/setup-buildx-action@v1
+  #    -
+  #      name: Install Nix
+  #      uses: DeterminateSystems/nix-installer-action@main
+  #    -
+  #      name: Get attic rev
+  #      id: rev
+  #      run: echo rev=$(git ls-remote https://github.com/zhaofengli/attic | head -1 | awk '{print $1}') >> $GITHUB_ENV
+  #    -
+  #      name: Build and push image
+  #      run: |
+  #        nix build -o attic.tar.gz "github:zhaofengli/attic/${{ env.rev }}#attic-server-image"
+  #        export image_tag="$(docker image load --input attic.tar.gz | grep 'Loaded image: ' | cut -d' ' -f3 | xargs)"
+  #        echo image_tag="${image_tag}" >> $GITHUB_ENV
+  #        docker image tag ${image_tag} docker.io/heywoodlh/attic:latest-arm64
+  #        docker image tag ${image_tag} docker.io/heywoodlh/attic:${{ env.rev }}-arm64
+  #        docker push docker.io/heywoodlh/attic:latest-arm64
+  #        docker push docker.io/heywoodlh/attic:${{ env.rev }}-arm64
