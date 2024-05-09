@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  docker:
+  nix-build:
     runs-on: ubuntu-latest
     steps:
       -
@@ -35,6 +35,7 @@ jobs:
           context: ./dockerfiles/nix
           file: ./dockerfiles/nix/Dockerfile
           load: true
+          target: test
           tags: heywoodlh/nix-local:latest
       -
         name: Get nix version
@@ -49,3 +50,32 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: heywoodlh/nix:latest,heywoodlh/nix:${{ env.version }}
+
+  #nix-static-build: runs-on: [self-hosted, linux] steps: - name: clone https://github.com/heywoodlh/dockerfiles uses: actions/checkout@master with: name: heywoodlh/dockerfiles repository: heywoodlh/dockerfiles path: ./dockerfiles - name: Set up QEMU uses: docker/setup-qemu-action@v1 - name: Set up Docker Buildx uses: docker/setup-buildx-action@v1 - name: Login to DockerHub
+  #      uses: docker/login-action@v1
+  #      with:
+  #        username: ${{ secrets.DOCKERHUB_USERNAME }}
+  #        password: ${{ secrets.DOCKERHUB_TOKEN }}
+  #    -
+  #      name: Build heywoodlh/nix locally
+  #      uses: docker/build-push-action@v2
+  #      with:
+  #        context: ./dockerfiles/nix
+  #        file: ./dockerfiles/nix/Dockerfile
+  #        load: true
+  #        target: static-test
+  #        tags: heywoodlh/nix-static:latest
+  #    -
+  #      name: Get nix version
+  #      run: |
+  #        echo version=$(docker run -i --rm heywoodlh/nix-static nix --version | awk '{print $3}') >> $GITHUB_ENV
+  #    -
+  #      name: Build and push heywoodlh/nix
+  #      uses: docker/build-push-action@v2
+  #      with:
+  #        context: ./dockerfiles/nix
+  #        file: ./dockerfiles/nix/Dockerfile
+  #        platforms: linux/amd64,linux/arm64
+  #        target: static
+  #        push: true
+  #        tags: heywoodlh/nix:static,heywoodlh/nix:static-${{ env.version }}
