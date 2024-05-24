@@ -10,7 +10,7 @@ jobs:
     runs-on: [self-hosted, linux, arm64]
 
     steps:
-      - uses: cachix/install-nix-action@v22
+      - uses: cachix/install-nix-action@v27
         with:
           nix_path: nixpkgs=channel:nixpkgs-unstable
 
@@ -20,16 +20,16 @@ jobs:
 
       - name: build all
         run: |
+          cd
           set -x
           git clone https://codeberg.org/adamcstephens/nixos-x13s || true
           cd nixos-x13s && git pull origin main
-          TARGETS=$(nix eval .#packages.aarch64-linux --apply 'builtins.attrNames' --json | jq '. | map(".#" + .) | join(" ")' -r)
-          OUTPUT=$(nix build --print-out-paths --keep-going $TARGETS)
-          echo $OUTPUT
-          echo "$OUTPUT" > build.out
+          nix develop .#ci -c just -- find-targets
+          nix develop .#ci -c just -- build
 
       - name: upload to cachix
         run: |
-          nix run --impure nixpkgs#cachix -- push heywoodlh-nixos-x13s $(cat build.out)
+          cd
+          nix run --impure nixpkgs#cachix -- push heywoodlh-nixos-x13s $(cat nixos-x13s/outputs)
         env:
           CACHIX_AUTH_TOKEN: '${{ secrets.CACHIX_TOKEN_X13S }}'
