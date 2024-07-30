@@ -29,17 +29,9 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build heywoodlh/k8s-service-scanner locally
-        uses: docker/build-push-action@v2
-        with:
-          context: ./dockerfiles/k8s-service-scanner
-          file: ./dockerfiles/k8s-service-scanner/Dockerfile
-          load: true
-          tags: heywoodlh/k8s-service-scanner-local:latest
-      -
         name: Get k8s-service-scanner version
         run: |
-          echo version=$(docker run -i --rm --entrypoint=kubectl heywoodlh/k8s-service-scanner-local version | head -1 | cut -d':' -f2 | tr -d ' ') >> $GITHUB_ENV
+          echo version=$(cat ./dockerfiles/k8s-service-scanner/version) >> $GITHUB_ENV
       -
         name: Build and push heywoodlh/k8s-service-scanner
         uses: docker/build-push-action@v2
