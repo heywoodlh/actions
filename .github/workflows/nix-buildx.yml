@@ -74,26 +74,3 @@ jobs:
           target: base
           push: true
           tags: heywoodlh/nix:latest,heywoodlh/nix:${{ env.version }}
-      -
-        name: Build heywoodlh/nix:static locally
-        uses: docker/build-push-action@v2
-        with:
-          context: ./dockerfiles/nix
-          file: ./dockerfiles/nix/Dockerfile
-          load: true
-          target: static-test
-          tags: heywoodlh/nix-local:latest
-      -
-        name: Get nix static version
-        run: |
-          echo version=$(docker run -i --rm heywoodlh/nix-local nix --version | awk '{print $3}') >> $GITHUB_ENV
-      -
-        name: Build and push heywoodlh/nix:static
-        uses: docker/build-push-action@v2
-        with:
-          context: ./dockerfiles/nix
-          file: ./dockerfiles/nix/Dockerfile
-          target: static
-          platforms: linux/amd64,linux/arm64
-          push: true
-          tags: heywoodlh/nix:static,heywoodlh/nix:static-${{ env.version }}
