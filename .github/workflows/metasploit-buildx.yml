@@ -45,7 +45,7 @@ jobs:
       -
         name: Get metasploit version
         run: |
-          echo version=$(docker run --entrypoint=bash -i --rm heywoodlh/metasploit-test -c "msfconsole --version |& cut -d'-' -f1 | awk '{print \$3}'") >> $GITHUB_ENV
+          echo version=$(docker run --entrypoint=bash -i --rm heywoodlh/metasploit-test -c "msfconsole --version |& cut -d'-' -f1 | awk '{print \$3}' | tail -1") >> $GITHUB_ENV
       -
         name: Build and push heywoodlh/metasploit
         uses: docker/build-push-action@v2
