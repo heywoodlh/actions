@@ -1,0 +1,180 @@
+name: vim-buildx
+
+on:
+  schedule:
+        - cron: "0 0 * * Sat"
+  workflow_dispatch:
+
+jobs:
+  build-and-push-vim:
+    runs-on: ubuntu-latest
+    outputs:
+      output1: ${{ steps.vim_version.outputs.vim_version }}
+      output2: ${{ steps.vim_version.outputs.neovim_version }}
+    steps:
+      -
+        name: clone https://github.com/heywoodlh/dockerfiles
+        uses: actions/checkout@master
+        with:
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build heywoodlh/vim:vim locally
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/vim
+          file: ./dockerfiles/vim/Dockerfile.base
+          load: true
+          target: vim
+          tags: heywoodlh/vim:vim
+      -
+        name: Build heywoodlh/vim:neovim locally
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/vim
+          file: ./dockerfiles/vim/Dockerfile.base
+          load: true
+          target: neovim
+          tags: heywoodlh/vim:neovim
+      -
+        name: Get vim version
+        id: vim_version
+        run: |
+          export vim_version=$(docker run --entrypoint=bash -i --rm heywoodlh/vim:vim -c "vim --version | head -1" | grep -oP '\d+(\.\d+)*' | head -1)
+          echo vim_version=${vim_version} >> $GITHUB_ENV
+          echo "vim_version=${vim_version}" >> "$GITHUB_OUTPUT"
+          export neovim_version=$(docker run --entrypoint=bash -i --rm heywoodlh/vim:neovim -c "nvim --version | head -1" | awk '{print $2}')
+          echo neovim_version=${neovim_version} >> $GITHUB_ENV
+          echo "neovim_version=${neovim_version}" >> "$GITHUB_OUTPUT"
+      -
+        name: Build and push heywoodlh/vim:vim
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/vim
+          file: ./dockerfiles/vim/Dockerfile.base
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          target: vim
+          push: true
+          tags: heywoodlh/vim:latest,heywoodlh/vim:${{ env.vim_version }}
+      -
+        name: Build and push heywoodlh/vim:neovim
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/vim
+          file: ./dockerfiles/vim/Dockerfile.base
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          target: neovim
+          push: true
+          tags: heywoodlh/vim:neovim,heywoodlh/vim:neovim-${{ env.neovim_version }}
+
+  build-and-push-plugin-managers:
+    runs-on: ubuntu-latest
+    needs: build-and-push-vim
+    strategy:
+      matrix:
+        plugin_manager: ["pathogen", "vim-plug", "vundle"]
+        arch: ["linux/amd64", "linux/arm64", "linux/armhf"]
+    steps:
+      -
+        name: clone https://github.com/heywoodlh/dockerfiles
+        uses: actions/checkout@master
+        with:
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build heywoodlh/vim:base locally
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/vim
+          file: ./dockerfiles/vim/Dockerfile.base
+          load: true
+          push: false
+          target: base
+          tags: base
+      -
+        name: Build heywoodlh/vim:neovim locally
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/vim
+          file: ./dockerfiles/vim/Dockerfile.base
+          load: true
+          push: false
+          target: vim
+          tags: vim
+      -
+        name: Build heywoodlh/vim:neovim locally
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/vim
+          file: ./dockerfiles/vim/Dockerfile.base
+          load: true
+          push: false
+          target: neovim
+          tags: neovim
+      -
+        name: Build heywoodlh/vim:neovim locally
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/vim
+          file: ./dockerfiles/vim/Dockerfile.${{ matrix.plugin_manager }}
+          load: true
+          push: false
+          target: vim-test
+          tags: vim-test
+      -
+        name: Build heywoodlh/vim:neovim locally
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/vim
+          file: ./dockerfiles/vim/Dockerfile.${{ matrix.plugin_manager }}
+          load: true
+          push: false
+          target: neovim-test
+          tags: neovim-test
+      -
+        name: Build and push heywoodlh/vim:${{ matrix.plugin_manager }}-vim
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/vim
+          file: ./dockerfiles/vim/Dockerfile.${{ matrix.plugin_manager }}
+          platforms: ${{ matrix.arch }}
+          target: ${{ matrix.plugin_manager }}-vim
+          push: true
+          tags: heywoodlh/vim:${{ matrix.plugin_manager }}-vim,heywoodlh/vim:${{ matrix.plugin_manager }}-vim-${{ needs.build-and-push-vim.outputs.vim_version }}
+      -
+        name: Build and push heywoodlh/vim:${{ matrix.plugin_manager }}-neovim
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/vim
+          file: ./dockerfiles/vim/Dockerfile.${{ matrix.plugin_manager }}
+          platforms: ${{ matrix.arch }}
+          target: ${{ matrix.plugin_manager }}-neovim
+          push: true
+          tags: heywoodlh/vim:${{ matrix.plugin_manager }}-neovim,heywoodlh/vim:${{ matrix.plugin_manager }}-neovim-${{ needs.build-and-push-vim.outputs.neovim_version }}
+
