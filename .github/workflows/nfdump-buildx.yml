@@ -4,52 +4,62 @@ on:
   schedule:
     - cron: "30 2 * * Sat"
   workflow_dispatch:
-  
+
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
       -
-        name: clone https://github.com/heywoodlh/dockerfiles
+        name: clone nfdump
         uses: actions/checkout@master
         with:
-          name: heywoodlh/dockerfiles 
-          repository: heywoodlh/dockerfiles 
-          path: ./dockerfiles
+          name: heywoodlh/nfdump
+          repository: heywoodlh/nfdump
+          path: ./nfdump
+          ref: docker-multistage-builds
       -
         name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
+        uses: docker/setup-qemu-action@master
       -
         name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
+        uses: docker/setup-buildx-action@master
       -
         name: Login to DockerHub
-        uses: docker/login-action@v1 
+        uses: docker/login-action@master
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push heywoodlh/nfdump
+        name: Build heywoodlh/nfdump locally
         uses: docker/build-push-action@v2
         with:
-          context: ./dockerfiles/nfdump
-          file: ./dockerfiles/nfdump/Dockerfile
-          platforms: linux/amd64,linux/arm64,linux/armhf
-          push: true
-          tags: heywoodlh/nfdump:latest
-      - 
+          context: ./nfdump
+          file: ./nfdump/extra/docker/Dockerfile.ubuntu # use ubuntu target for gnu grep
+          load: true
+          target: base
+          tags: heywoodlh/nfdump:nfdump-local
+      -
         name: Get nfdump version
         id: version
-        uses: addnab/docker-run-action@v3
-        with:
-          image: heywoodlh/nfdump:latest
-          run: echo "::set-output name=version::$(nfdump -V | awk '{print $(NF)}')"
+        run: |
+          echo version=$(docker run --entrypoint=bash -i --rm heywoodlh/nfdump:nfdump-local -c "nfdump -V | grep -oE 'Version: (.*)\ '" | awk '{print $2}' | cut -d'-' -f1) >> $GITHUB_ENV
       -
-        name: Build and push heywoodlh/nfdump:${{ steps.version.outputs.version }}
-        uses: docker/build-push-action@v2
+        name: Build and push heywoodlh/nfdump:${{ env.version }}
+        uses: docker/build-push-action@master
         with:
-          context: ./dockerfiles/nfdump
-          file: ./dockerfiles/nfdump/Dockerfile
+          context: ./nfdump
+          file: ./nfdump/extra/docker/Dockerfile
           platforms: linux/amd64,linux/arm64,linux/armhf
+          target: nfdump
           push: true
-          tags: heywoodlh/nfdump:${{ steps.version.outputs.version }}
+          tags: heywoodlh/nfdump:latest,heywoodlh/nfdump:${{ env.version }},heywoodlh/nfdump:nfdump-${{ env.version }}
+      -
+        name: Build and push heywoodlh/nfdump:nfcapd-${{ env.version }}
+        uses: docker/build-push-action@master
+        with:
+          context: ./nfdump
+          file: ./nfdump/extra/docker/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          target: nfcapd
+          push: true
+          tags: heywoodlh/nfdump:nfcapd,heywoodlh/nfdump:nfcapd-${{ env.version }}
