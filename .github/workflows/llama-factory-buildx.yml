@@ -1,0 +1,47 @@
+name: llama-factory-buildx
+
+on:
+  schedule:
+        - cron: "0 0 * * Mon"
+  workflow_dispatch:
+
+jobs:
+  build-and-push-llama-factory:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@v1.3.1
+      -
+        name: clone https://github.com/hiyouga/LLaMA-Factory
+        uses: actions/checkout@master
+        with:
+          name: hiyouga/LLaMA-Factory
+          repository: hiyouga/LLaMA-Factory
+          path: ./llama-factory
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@master
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Get variables for version tags
+        run: |
+          echo rev=$(git -C ./llama-factory rev-parse --short HEAD) >> $GITHUB_ENV
+          echo date=$(date +%Y_%m) >> $GITHUB_ENV
+      -
+        name: Build and push heywoodlh/llama-factory
+        uses: docker/build-push-action@master
+        with:
+          context: ./llama-factory
+          file: ./llama-factory/docker/docker-cuda/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: heywoodlh/llama-factory:latest,heywoodlh/llama-factory:${{ env.rev }},heywoodlh/llama-factory:${{ env.rev }}-${{ env.date }},heywoodlh/llama-factory:${{ env.date }}
+
