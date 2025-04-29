@@ -1,0 +1,60 @@
+name: samplicator-buildx
+
+on:
+  schedule:
+        - cron: "0 0 * * Mon"
+  workflow_dispatch:
+
+jobs:
+  build-and-push-samplicator:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/heywoodlh/dockerfiles
+        uses: actions/checkout@master
+        with:
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
+      -
+        name: clone https://github.com/sleinen/samplicator
+        uses: actions/checkout@master
+        with:
+          name: sleinen/samplicator
+          repository: sleinen/samplicator
+          path: ./samplicator
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@master
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Get current commit
+        run: |
+          echo rev=$(git -C ./samplicator rev-parse --short HEAD) >> $GITHUB_ENV
+          echo date=$(date +%Y_%m) >> $GITHUB_ENV
+      -
+        name: Build samplicator test
+        uses: docker/build-push-action@master
+        with:
+          context: ./dockerfiles/samplicator
+          file: ./dockerfiles/samplicator/Dockerfile
+          push: false
+          target: test
+          tags: heywoodlh/samplicator:test
+      -
+        name: Build and push heywoodlh/samplicator:samplicator
+        uses: docker/build-push-action@master
+        with:
+          context: ./dockerfiles/samplicator
+          file: ./dockerfiles/samplicator/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/samplicator:latest,heywoodlh/samplicator:${{ env.rev }}-${{ env.date }},heywoodlh/samplicator:${{ env.rev }},heywoodlh/samplicator:${{ env.date }}
