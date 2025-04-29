@@ -1,0 +1,52 @@
+name: kubectl-buildx
+
+on:
+  schedule:
+        - cron: "0 0 * * Mon"
+  workflow_dispatch:
+
+jobs:
+  build-and-push-kubectl:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/heywoodlh/dockerfiles
+        uses: actions/checkout@master
+        with:
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@master
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build kubectl test
+        uses: docker/build-push-action@master
+        with:
+          context: ./dockerfiles/kubectl
+          file: ./dockerfiles/kubectl/Dockerfile
+          push: false
+          load: true
+          tags: heywoodlh/kubectl:test
+      -
+        name: Get current commit
+        run: |
+          echo version=$(docker run --entrypoint=ash -i --rm heywoodlh/kubectl:test -c "kubectl version --client=true | head -1 | cut -d':' -f2 | tr -d ' '") >> $GITHUB_ENV
+      -
+        name: Build and push heywoodlh/kubectl:kubectl
+        uses: docker/build-push-action@master
+        with:
+          context: ./dockerfiles/kubectl
+          file: ./dockerfiles/kubectl/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/kubectl:latest,heywoodlh/kubectl:${{ env.version }}
