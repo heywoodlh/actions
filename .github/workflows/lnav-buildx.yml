@@ -1,0 +1,48 @@
+name: lnav-buildx
+
+on:
+  schedule:
+        - cron: "0 0 * * Mon"
+  workflow_dispatch:
+
+jobs:
+  build-and-push-lnav:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/heywoodlh/dockerfiles
+        uses: actions/checkout@master
+        with:
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@master
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and load requisite layers
+        working-directory: ./dockerfiles/lnav
+        run:
+          ./build.sh #builds test target
+      -
+        name: Get current version
+        run: |
+          echo version=$(docker run --entrypoint=bash -i --rm docker.io/heywoodlh/lnav:test -c "lnav --version" | awk '{print $2}') >> $GITHUB_ENV
+      -
+        name: Build and push heywoodlh/lnav
+        uses: docker/build-push-action@master
+        with:
+          context: ./dockerfiles/lnav
+          file: ./dockerfiles/lnav/Dockerfile
+          platforms: linux/amd64,linux/arm64,linux/armhf
+          push: true
+          tags: heywoodlh/lnav:latest,heywoodlh/lnav:${{ env.version }}

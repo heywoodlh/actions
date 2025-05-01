@@ -1,0 +1,38 @@
+name: lnav-builder-buildx
+
+on:
+  schedule:
+        - cron: "0 3 1 * *"
+  workflow_dispatch:
+
+jobs:
+  build-and-push-lnav-builder:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/heywoodlh/dockerfiles
+        uses: actions/checkout@master
+        with:
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@master
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build and load requisite layers
+        working-directory: ./dockerfiles/lnav
+        run:
+          ./build.sh #builds builder image and test target
+        env:
+          FRESH_BUILDER: true
+          PUSH: true
