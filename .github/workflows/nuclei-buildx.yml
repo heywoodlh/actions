@@ -16,6 +16,7 @@ jobs:
           name: projectdiscovery/nuclei
           repository: projectdiscovery/nuclei
           path: ./nuclei
+          ref: "dev"
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
