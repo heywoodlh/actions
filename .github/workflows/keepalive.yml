@@ -3,12 +3,12 @@ on:
   schedule:
     - cron: "0 0 * * *"
   workflow_dispatch:
+permissions:
+  actions: write
 jobs:
   keepalive-job:
     name: Keepalive Workflow
     runs-on: ubuntu-latest
-    permissions:
-      actions: write
     steps:
       - uses: actions/checkout@v4
       - uses: entepotenz/keep-github-actions-alive-min-dependencies@v1
