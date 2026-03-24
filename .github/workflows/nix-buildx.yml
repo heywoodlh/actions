@@ -36,11 +36,11 @@ jobs:
           file: ./dockerfiles/nix/Dockerfile
           load: true
           target: static-test
-          tags: heywoodlh/nix-local:latest
+          tags: heywoodlh/nix-static:latest
       -
         name: Get nix static version
         run: |
-          echo static_version=$(docker run -i --rm heywoodlh/nix-local nix --version | awk '{print $3}') >> $GITHUB_ENV
+          echo static_version=$(docker run -i --rm heywoodlh/nix-static:latest nix --version | rev | awk '{print $1}' | rev) >> $GITHUB_ENV
       -
         name: Build and push heywoodlh/nix:static
         uses: docker/build-push-action@master
@@ -63,7 +63,7 @@ jobs:
       -
         name: Get nix version
         run: |
-          echo nix_version=$(docker run -i --rm heywoodlh/nix-local nix --version | awk '{print $3}') >> $GITHUB_ENV
+          echo nix_version=$(docker run -i --rm heywoodlh/nix-local:latest nix --version | rev | awk '{print $1}' | rev) >> $GITHUB_ENV
       -
         name: Build and push heywoodlh/nix
         uses: docker/build-push-action@master
