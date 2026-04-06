@@ -74,26 +74,3 @@ jobs:
           target: base
           push: true
           tags: heywoodlh/nix:latest,heywoodlh/nix:${{ env.nix_version }}
-      -
-        name: Build heywoodlh/nix:lix locally
-        uses: docker/build-push-action@master
-        with:
-          context: ./dockerfiles/nix
-          file: ./dockerfiles/nix/Dockerfile
-          load: true
-          target: lix-test
-          tags: heywoodlh/lix-local:latest
-      -
-        name: Get lix version
-        run: |
-          echo lix_version=$(docker run -i --rm heywoodlh/lix-local nix --version | awk '{print $3}') >> $GITHUB_ENV
-      -
-        name: Build and push heywoodlh/nix
-        uses: docker/build-push-action@master
-        with:
-          context: ./dockerfiles/nix
-          file: ./dockerfiles/nix/Dockerfile
-          platforms: linux/amd64,linux/arm64
-          target: lix
-          push: true
-          tags: heywoodlh/nix:lix,heywoodlh/nix:lix-${{ env.lix_version }}
