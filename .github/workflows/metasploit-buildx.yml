@@ -37,7 +37,8 @@ jobs:
           load: true
           target: test
           tags: heywoodlh/metasploit-test:latest
-      - name: Run test
+      -
+        name: Run test
         run: docker run -i --rm heywoodlh/metasploit-test
       -
         name: Get current month
