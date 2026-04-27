@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  docker:
+  metasploit:
     runs-on: ubuntu-latest
     steps:
       -
@@ -56,3 +56,21 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: heywoodlh/metasploit:latest,heywoodlh/metasploit:${{ env.version }},heywoodlh/metasploit:${{ env.version }}-${{ env.date }},heywoodlh/metasploit:${{ env.date }}
+
+  server-clients:
+    runs-on: ubuntu-latest
+    needs: metasploit
+    strategy:
+      matrix:
+        target: ["msfrpc", "msfrpcd", "msfd", "msfd-client"]
+    steps:
+      -
+        name: Build and push heywoodlh/metasploit
+        uses: docker/build-push-action@v2
+        with:
+          context: ./dockerfiles/metasploit
+          file: ./dockerfiles/metasploit/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          target: "${{ matrix.target }}"
+          push: true
+          tags: heywoodlh/metasploit:${{ matrix.target }}-${{ env.version }},heywoodlh/metasploit:${{ matrix.target }}-${{ env.version }}-${{ env.date }},heywoodlh/metasploit:${{ matrix.target }}-${{ env.date }}
