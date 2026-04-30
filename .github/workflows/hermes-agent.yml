@@ -1,0 +1,52 @@
+name: hermes-agent-buildx
+
+on:
+  schedule:
+        - cron: "45 9 * * Sun"
+  workflow_dispatch:
+
+jobs:
+  hermes-agent-build:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/heywoodlh/dockerfiles
+        uses: actions/checkout@master
+        with:
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@master
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build heywoodlh/hermes-agent:latest locally
+        uses: docker/build-push-action@master
+        with:
+          context: ./dockerfiles/hermes-agent
+          file: ./dockerfiles/hermes-agent/Dockerfile
+          load: true
+          target: test
+          tags: heywoodlh/hermes-agent:test
+      -
+        name: Get hermes-agent version
+        run: |
+          echo version=$(docker run -i --rm --entrypoint=bash heywoodlh/hermes-agent:test -c "hermes --version | head -1 | cut -d\"(\" -f2 | cut -d\")\" -f1") >> $GITHUB_ENV
+      -
+        name: Build and push heywoodlh/hermes-agent:latest
+        uses: docker/build-push-action@master
+        with:
+          context: ./dockerfiles/hermes-agent
+          file: ./dockerfiles/hermes-agent/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: heywoodlh/hermes-agent:latest,heywoodlh/hermes-agent:${{ env.version }}
