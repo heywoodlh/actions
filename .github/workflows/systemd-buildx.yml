@@ -29,7 +29,9 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Test images
         run: |
-          ./dockerfiles/systemd/test-systemd.sh
+          pushd ./dockerfiles/systemd
+          ./test-systemd.sh
+          popd
       -
         name: Build and push heywoodlh/systemd
         run: |
