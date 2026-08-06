@@ -1,0 +1,53 @@
+name: davmail-buildx
+
+on:
+  schedule:
+        - cron: "45 9 * * Sun"
+  workflow_dispatch:
+
+jobs:
+  davmail-build:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: clone https://github.com/heywoodlh/dockerfiles
+        uses: actions/checkout@master
+        with:
+          name: heywoodlh/dockerfiles
+          repository: heywoodlh/dockerfiles
+          path: ./dockerfiles
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@master
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@master
+      -
+        name: Login to DockerHub
+        uses: docker/login-action@master
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      -
+        name: Build heywoodlh/davmail:latest locally
+        uses: docker/build-push-action@master
+        with:
+          context: ./dockerfiles/davmail
+          file: ./dockerfiles/davmail/Dockerfile
+          load: true
+          tags: heywoodlh/davmail:version
+      -
+        name: Get davmail version
+        run: |
+          export version=$(docker run -i --rm --entrypoint=ash heywoodlh/davmail:version -c "apk list" | grep davmail | awk '{print $1}' | cut -d'-' -f2)
+          [ -z $version ] && echo "Unable to determine version, exiting with error." && exit 1
+          echo "version=$version" >> $GITHUB_ENV
+      -
+        name: Build and push heywoodlh/davmail:latest
+        uses: docker/build-push-action@master
+        with:
+          context: ./dockerfiles/davmail
+          file: ./dockerfiles/davmail/Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: heywoodlh/davmail:latest,heywoodlh/davmail:${{ env.version }}
