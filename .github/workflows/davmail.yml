@@ -39,7 +39,7 @@ jobs:
       -
         name: Get davmail version
         run: |
-          export version=$(docker run -i --rm --entrypoint=ash heywoodlh/davmail:version -c "apk list" | grep davmail | awk '{print $1}' | cut -d'-' -f2)
+          export version=$(docker run -i --rm --entrypoint=bash heywoodlh/davmail:version -c "apk list" | grep davmail | awk '{print $1}' | cut -d'-' -f2)
           [ -z $version ] && echo "Unable to determine version, exiting with error." && exit 1
           echo "version=$version" >> $GITHUB_ENV
       -
